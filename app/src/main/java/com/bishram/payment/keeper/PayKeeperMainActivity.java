@@ -2,9 +2,11 @@ package com.bishram.payment.keeper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.bishram.payment.keeper.activities.PayKeeperLoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -29,8 +31,9 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         boolean hasUser = checkUser();
 
         if (!hasUser) {
-            // TODO: Goto login activity
-            showToast("No user is logged into the app.");
+            // Goto login activity
+            startActivity(new Intent(PayKeeperMainActivity.this, PayKeeperLoginActivity.class));
+            finish();
         } else {
             showToast("User is already logged into the app.");
         }

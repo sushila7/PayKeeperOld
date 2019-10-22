@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.PayKeeperLoginActivity">
+
+    <ImageView
+        android:id="@+id/image_view_login_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/content_desc_login_bkg_image"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/login_background_image" />
+
+    <LinearLayout
+        android:id="@+id/layout_enter_mobile_no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
+        android:background="#77FFFFFF"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/layout_login_enter_verification_code"
+        tools:layout_editor_absoluteX="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/text_view_login_country_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/country_code_india"
+                    android:textColor="#000"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/edit_text_login_10_digit_mobile_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/background_edit_text_mob_no"
+                    android:ems="10"
+                    android:hint="@string/ten_digit_mob_no"
+                    android:inputType="textPersonName"
+                    android:maxLength="10"
+                    android:paddingStart="44dp"
+                    android:paddingEnd="2dp"
+                    android:textColorHint="#555555"
+                    tools:ignore="Autofill" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/button_login_edit_mobile_no"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/background_edit_text_mob_no"
+                android:text="@string/btn_txt_edit" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_login_send_verification_code"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/background_edit_text_mob_no"
+            android:text="@string/btn_txt_send_verification_code" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_login_enter_verification_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="#77FFFFFF"
+        android:orientation="vertical"
+        android:padding="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_text_login_6_digit_verification_code"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_edit_text_mob_no"
+                android:gravity="center"
+                android:hint="@string/hint_six_digit_v_code"
+                android:inputType="number"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#555555"
+                tools:ignore="Autofill" />
+
+            <Button
+                android:id="@+id/button_login_clear_code"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/background_edit_text_mob_no"
+                android:text="@string/btn_txt_clear" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_login_verify_and_continue"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/background_edit_text_mob_no"
+            android:text="@string/btn_txt_verify_and_continue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

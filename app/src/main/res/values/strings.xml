@@ -1,3 +1,21 @@
 <resources>
+    <!-- Name of the application -->
     <string name="app_name">PayKeeper</string>
+
+    <!-- Country codes -->
+    <!-- Indian country code -->
+    <string name="country_code_india">+91</string>
+
+    <!-- Ten digit mobile number example -->
+    <string name="ten_digit_mob_no">9912304558</string>
+
+    <!-- activity_pay_keeper_main -->
+
+    <!-- activity_pay_keeper_login -->
+    <string name="btn_txt_edit">Edit</string>
+    <string name="btn_txt_verify_and_continue"><![CDATA[Verify & Continue]]></string>
+    <string name="btn_txt_send_verification_code">Send verification code</string>
+    <string name="content_desc_login_bkg_image">Login background image</string>
+    <string name="hint_six_digit_v_code">6 digit Verification code</string>
+    <string name="btn_txt_clear">Clear</string>
 </resources>
