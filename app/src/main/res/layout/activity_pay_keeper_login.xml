@@ -58,7 +58,7 @@
                     android:background="@drawable/background_edit_text_mob_no"
                     android:ems="10"
                     android:hint="@string/ten_digit_mob_no"
-                    android:inputType="textPersonName"
+                    android:inputType="phone"
                     android:maxLength="10"
                     android:paddingStart="44dp"
                     android:paddingEnd="2dp"
@@ -71,16 +71,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:background="@drawable/background_edit_text_mob_no"
+                android:enabled="false"
                 android:text="@string/btn_txt_edit" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/button_login_send_verification_code"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/background_edit_text_mob_no"
-            android:text="@string/btn_txt_send_verification_code" />
+            android:layout_height="42dp">
+
+            <Button
+                android:id="@+id/button_login_send_verification_code"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/background_edit_text_mob_no"
+                android:text="@string/btn_txt_send_verification_code" />
+
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -108,9 +115,11 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:background="@drawable/background_edit_text_mob_no"
+                android:enabled="false"
                 android:gravity="center"
                 android:hint="@string/hint_six_digit_v_code"
                 android:inputType="number"
+                android:maxLength="6"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColorHint="#555555"
@@ -122,6 +131,7 @@
                 android:layout_height="36dp"
                 android:layout_marginStart="4dp"
                 android:background="@drawable/background_edit_text_mob_no"
+                android:enabled="false"
                 android:text="@string/btn_txt_clear" />
         </LinearLayout>
 
@@ -131,6 +141,7 @@
             android:layout_height="42dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/background_edit_text_mob_no"
+            android:enabled="false"
             android:text="@string/btn_txt_verify_and_continue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -2,6 +2,10 @@
     <!-- Name of the application -->
     <string name="app_name">PayKeeper</string>
 
+    <!-- Action bar titles -->
+    <!-- Login activity action bar title -->
+    <string name="login_action_bar_title">Sign Into Your Account</string>
+
     <!-- Country codes -->
     <!-- Indian country code -->
     <string name="country_code_india">+91</string>
