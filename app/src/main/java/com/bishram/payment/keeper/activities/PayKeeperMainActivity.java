@@ -58,16 +58,6 @@ public class PayKeeperMainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        boolean hasUser = checkUser();
-
-        if (!hasUser) {
-            // Goto login activity
-            startActivity(new Intent(PayKeeperMainActivity.this, PayKeeperLoginActivity.class));
-            finish();
-        } else {
-            showToast("Already logged IN");
-        }
     }
 
     // All initialization related to UI views will go here
@@ -109,10 +99,14 @@ public class PayKeeperMainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
                     progressBarFetchingData.setVisibility(View.GONE);
+
+                    startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
+                    finish();
                 } else {
                     // No owner was found
                     // So, read renter's path
-                    readFirebaseRenterDetails();
+                    startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
+                    finish();
                 }
             }
 
@@ -131,13 +125,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         referenceUserRenter.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
-                    showToast("Renter found");
-                } else {
-                    // No renter was also found
-                    // So, goto Register new user
-                    readFirebaseRenterDetails();
-                }
+
             }
 
             @Override

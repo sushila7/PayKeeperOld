@@ -6,4 +6,199 @@
     android:layout_height="match_parent"
     tools:context=".activities.UserRegistrationActivity">
 
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="32dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="24dp">
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_reg_owner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="House Owner" />
+
+                <RadioButton
+                    android:id="@+id/rb_reg_renter"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="House Renter" />
+            </RadioGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ACACAC" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_reg_self"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:enabled="false"
+                    android:text="Self" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="#ACACAC" />
+
+                <RadioGroup
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <RadioButton
+                        android:id="@+id/rb_reg_or_gender_male"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:text="Male" />
+
+                    <RadioButton
+                        android:id="@+id/rb_reg_or_gender_female"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:text="Female" />
+                </RadioGroup>
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ACACAC" />
+
+            <EditText
+                android:id="@+id/edit_text_reg_or_name_male"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Owner/Renter's Name (Male)"
+                android:inputType="textPersonName|textCapWords" />
+
+            <EditText
+                android:id="@+id/edit_text_reg_or_mob_male"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Male Mobile Number"
+                android:inputType="phone" />
+
+            <EditText
+                android:id="@+id/edit_text_reg_or_name_female"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Owner/Renter's Name (Female)"
+                android:inputType="textPersonName|textCapWords" />
+
+            <EditText
+                android:id="@+id/edit_text_reg_or_mob_female"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Female mobile number"
+                android:inputType="phone" />
+
+            <EditText
+                android:id="@+id/edit_text_reg_display_male"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Account display name"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/edit_text_reg_alt_mob"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:enabled="false"
+                android:hint="Alternative mobile number"
+                android:inputType="phone" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btn_main_register_user"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/background_edit_text_mob_no"
+            android:enabled="false"
+            android:text="Register" />
+
+        <Button
+            android:id="@+id/btn_main_discard_user"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/background_edit_text_mob_no"
+            android:text="Discard" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_main_fetching_user_data"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#0288D1"
+        android:padding="120dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
