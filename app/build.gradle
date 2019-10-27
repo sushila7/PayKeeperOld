@@ -7,8 +7,8 @@ android {
         applicationId "com.bishram.payment.keeper"
         minSdkVersion 22
         targetSdkVersion 28
-        versionCode 1
-        versionName "ver 1910.22.00"
+        versionCode 2
+        versionName "ver 1910.27.02"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

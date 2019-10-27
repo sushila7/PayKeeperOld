@@ -22,6 +22,16 @@ public class PayKeeperMainActivity extends AppCompatActivity {
 
         //Initialize firebase objects
         initializeFirebase();
+
+        if (!checkUser()) {
+            // No logged user if found
+            // In case Goto login activity
+            startActivity(new Intent(PayKeeperMainActivity.this, PayKeeperLoginActivity.class));
+            finish();
+        } else {
+            // Logged user is found
+            showToast("User has logged in");
+        }
     }
 
     @Override
