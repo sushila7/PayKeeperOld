@@ -9,4 +9,11 @@ public class Constants {
 
     // Phone number verification time out
     public static final long REQUEST_TIME_OUT = 60;
+
+    // FIREBASE REALTIME DATABASE PATHS
+    // Path for the owner
+    public static final String FIREBASE_USER_OWNER_PATH = "users/owners";
+
+    // Path for the renter
+    public static final String FIREBASE_USER_RENTER_PATH = "users/renters";
 }
