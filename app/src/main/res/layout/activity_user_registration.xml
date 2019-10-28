@@ -8,10 +8,11 @@
 
     <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:fillViewport="true"
         android:orientation="vertical"
         android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -32,14 +33,14 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/rb_reg_owner"
+                    android:id="@+id/radio_button_reg_owner"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="House Owner" />
 
                 <RadioButton
-                    android:id="@+id/rb_reg_renter"
+                    android:id="@+id/radio_button_reg_renter"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -57,7 +58,7 @@
                 android:orientation="horizontal">
 
                 <CheckBox
-                    android:id="@+id/cb_reg_self"
+                    android:id="@+id/check_box_reg_self"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -73,6 +74,7 @@
                     android:background="#ACACAC" />
 
                 <RadioGroup
+                    android:id="@+id/rg_reg_or_gender"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
@@ -112,7 +114,7 @@
                 android:layout_marginTop="16dp"
                 android:ems="10"
                 android:enabled="false"
-                android:hint="Owner/Renter's Name (Male)"
+                android:hint="User name (male)"
                 android:inputType="textPersonName|textCapWords" />
 
             <EditText
@@ -121,8 +123,9 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:enabled="false"
-                android:hint="Male Mobile Number"
-                android:inputType="phone" />
+                android:hint="User mobile (male)"
+                android:inputType="phone"
+                android:maxLength="10" />
 
             <EditText
                 android:id="@+id/edit_text_reg_or_name_female"
@@ -130,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:enabled="false"
-                android:hint="Owner/Renter's Name (Female)"
+                android:hint="User name (female)"
                 android:inputType="textPersonName|textCapWords" />
 
             <EditText
@@ -139,8 +142,9 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:enabled="false"
-                android:hint="Female mobile number"
-                android:inputType="phone" />
+                android:hint="User mobile (female)"
+                android:inputType="phone"
+                android:maxLength="10" />
 
             <EditText
                 android:id="@+id/edit_text_reg_display_male"
@@ -158,20 +162,23 @@
                 android:ems="10"
                 android:enabled="false"
                 android:hint="Alternative mobile number"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:maxLength="10" />
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="#1976D2"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/btn_main_register_user"
+            android:id="@+id/button_reg_register_user"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -181,7 +188,7 @@
             android:text="Register" />
 
         <Button
-            android:id="@+id/btn_main_discard_user"
+            android:id="@+id/button_reg_discard_user"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

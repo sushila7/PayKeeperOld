@@ -10,8 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.UserRegistrationActivity"></activity>
-        <activity android:name=".activities.PayKeeperMainActivity">
+
+        <activity android:name=".activities.PayKeeperMainActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -19,10 +20,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.PayKeeperLoginActivity"
             android:label="@string/login_action_bar_title"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".activities.UserRegistrationActivity"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bishram.payment.keeper.R;
+import com.bishram.payment.keeper.models.OwnersOfHouse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -51,7 +52,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
             finish();
         } else {
             // Logged user is found
-            getUserDetails();
+            readFirebaseOwnerDetails();
         }
     }
 
@@ -87,7 +88,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         readFirebaseOwnerDetails();
     }
 
-    // Read firebase database owner path
+    // Read firebase database owner path ===========================================================
     private void readFirebaseOwnerDetails() {
         // Path reference to the User "Owner"
         DatabaseReference referenceUserOwner = referenceRoot.child(FIREBASE_USER_OWNER_PATH);
@@ -100,13 +101,15 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
                     progressBarFetchingData.setVisibility(View.GONE);
 
-                    startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
-                    finish();
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        OwnersOfHouse ownersOfHouse = userSnapshot.getValue(OwnersOfHouse.class);
+
+                        Toast.makeText(PayKeeperMainActivity.this, "user found", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     // No owner was found
                     // So, read renter's path
-                    startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
-                    finish();
+                    readFirebaseRenterDetails();
                 }
             }
 
@@ -117,7 +120,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         });
     }
 
-    // Read firebase database renter path
+    // Read firebase database renter path ==========================================================
     private void readFirebaseRenterDetails() {
         // Path reference to the User "Renter"
         DatabaseReference referenceUserRenter = referenceRoot.child(FIREBASE_USER_RENTER_PATH);
@@ -125,7 +128,12 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         referenceUserRenter.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
+                    Toast.makeText(PayKeeperMainActivity.this, "Found", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
+                    finish();
+                }
             }
 
             @Override
