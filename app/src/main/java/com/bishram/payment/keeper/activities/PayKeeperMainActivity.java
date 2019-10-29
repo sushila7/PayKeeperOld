@@ -129,7 +129,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                         String lordMobile = ownersOfHouse.getLandlordMobile();
                         String ladyMobile = ownersOfHouse.getLandladyMobile();
                         String altMobile = ownersOfHouse.getAlternateMobile();
-                        userCategory = "House owner";
+                        userCategory = "House Owner";
 
                         if (lordMobile != null && ladyMobile != null && altMobile != null) {
                             showToast("All mobile available");
@@ -215,14 +215,16 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
                     for (DataSnapshot renterSnapshot : dataSnapshot.getChildren()) {
                         RentersOfHouse rentersOfHouse = renterSnapshot.getValue(RentersOfHouse.class);
+                        orUserFound = false;
 
                         assert rentersOfHouse != null;
                         String maleName = rentersOfHouse.getRenterNameMale();
                         String femaleName = rentersOfHouse.getRenterNameFemale();
-                        String displayName = rentersOfHouse.getDisplayName();
                         String maleMobile = rentersOfHouse.getRenterMaleMobile();
                         String femaleMobile = rentersOfHouse.getRenterFemaleMobile();
                         String altMobile = rentersOfHouse.getAlternateMobile();
+                        displayName = rentersOfHouse.getDisplayName();
+                        userCategory = "House Renter";
 
                         if (maleMobile != null && femaleMobile != null && altMobile != null) {
                             showToast("All mobile available");
@@ -235,8 +237,9 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                         }
 
                         if (maleMobile != null && femaleMobile == null && altMobile != null) {
-                            showToast("Landlady's mobile not available");
                             orUserFound = true;
+
+                            displayMobile = maleMobile;
                         }
 
                         if (maleMobile == null && femaleMobile != null && altMobile != null) {
@@ -275,6 +278,13 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                             showToast("It is impossible case");
                             orUserFound = true;
                         }
+                    }
+
+                    if (!orUserFound) {
+                        startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
+                        finish();
+                    } else {
+                        setAccountDetails();
                     }
                 } else {
                     startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
