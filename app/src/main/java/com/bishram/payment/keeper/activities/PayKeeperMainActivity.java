@@ -1,7 +1,6 @@
 package com.bishram.payment.keeper.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -12,14 +11,16 @@ import android.widget.Toast;
 
 import com.bishram.payment.keeper.R;
 import com.bishram.payment.keeper.models.OwnersOfHouse;
+import com.bishram.payment.keeper.models.RentersOfHouse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 import static com.bishram.payment.keeper.Constants.FIREBASE_USER_OWNER_PATH;
 import static com.bishram.payment.keeper.Constants.FIREBASE_USER_RENTER_PATH;
@@ -34,6 +35,11 @@ public class PayKeeperMainActivity extends AppCompatActivity {
     // Declare an instance of root path of Realtime Database
     private DatabaseReference referenceRoot;
 
+    private boolean orUserFound;
+
+    private String thisUserMobileNumber;
+    private String toastMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +52,12 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         initializeFirebase();
 
         if (!checkUser()) {
-            // No logged user if found
-            // In case Goto login activity
+            // No logged user if found. In case Goto login activity
             startActivity(new Intent(PayKeeperMainActivity.this, PayKeeperLoginActivity.class));
             finish();
         } else {
             // Logged user is found
+            thisUserMobileNumber = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getPhoneNumber();
             readFirebaseOwnerDetails();
         }
     }
@@ -61,12 +67,12 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    // All initialization related to UI views will go here
+    // All initialization related to UI views will go here =========================================
     private void initializeViews() {
         progressBarFetchingData = findViewById(R.id.pb_main_fetching_user_data);
     }
 
-    // All initialization related to firebase will go here
+    // All initialization related to firebase will go here =========================================
     private void initializeFirebase() {
         // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
@@ -75,20 +81,17 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         referenceRoot = FirebaseDatabase.getInstance().getReference();
     }
 
+    // Checks the user whether he/she is authenticated or not ======================================
     private boolean checkUser() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-        // User already logged in
-        // User has not logged in yet
+        // Return "true" or "false" according to the logged in condition of user
+        // True if any user is logged in
+        // False if no user is logged in
         return currentUser != null;
     }
 
-    private void getUserDetails() {
-        // Read owner's path first
-        readFirebaseOwnerDetails();
-    }
-
-    // Read firebase database owner path ===========================================================
+    // Read firebase database's owner's path =======================================================
     private void readFirebaseOwnerDetails() {
         // Path reference to the User "Owner"
         DatabaseReference referenceUserOwner = referenceRoot.child(FIREBASE_USER_OWNER_PATH);
@@ -98,13 +101,79 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         referenceUserOwner.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                orUserFound = false;
+
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
                     progressBarFetchingData.setVisibility(View.GONE);
 
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         OwnersOfHouse ownersOfHouse = userSnapshot.getValue(OwnersOfHouse.class);
 
-                        Toast.makeText(PayKeeperMainActivity.this, "user found", Toast.LENGTH_SHORT).show();
+                        assert ownersOfHouse != null;
+                        String lordName = ownersOfHouse.getLandlordName();
+                        String ladyName = ownersOfHouse.getLandladyName();
+                        String displayName = ownersOfHouse.getDisplayName();
+                        String lordMobile = ownersOfHouse.getLandlordMobile();
+                        String ladyMobile = ownersOfHouse.getLandladyMobile();
+                        String altMobile = ownersOfHouse.getAlternateMobile();
+
+                        if (lordMobile != null && ladyMobile != null && altMobile != null) {
+                            showToast("All mobile available");
+                            orUserFound = true;
+                        }
+
+                        if (lordMobile != null && ladyMobile != null && altMobile == null) {
+                            showToast("Alternate mobile not available");
+                            orUserFound = true;
+                        }
+
+                        if (lordMobile != null && ladyMobile == null && altMobile != null) {
+                            showToast("Landlady's mobile not available");
+                            orUserFound = true;
+                        }
+
+                        if (lordMobile == null && ladyMobile != null && altMobile != null) {
+                            showToast("Landlord's mobile not available");
+                            orUserFound = true;
+                        }
+
+                        if (lordMobile != null && ladyMobile == null && altMobile == null) {
+                            showToast("Only landlord's mobile available");
+                            orUserFound = true;
+                        }
+
+                        if (lordMobile == null && ladyMobile != null && altMobile == null) {
+                            if (thisUserMobileNumber.equals(ladyMobile)) {
+                                orUserFound = true;
+
+                                toastMessage = ladyMobile;
+                                if (lordName != null) {
+                                    if (ladyName != null) {
+                                        toastMessage = String.format("%s\n%s\n%s\n%s", toastMessage, lordName, ladyName, displayName);
+                                    } else {
+                                        toastMessage = String.format("%s\n%s\n%s", toastMessage, lordName, displayName);
+                                    }
+                                } else {
+                                    toastMessage = String.format("%s\n%s\n%s", toastMessage, ladyName, displayName);
+                                }
+                            }
+                        }
+
+                        if (lordMobile == null && ladyMobile == null && altMobile != null) {
+                            showToast("Only alternate mobile available");
+                            orUserFound = true;
+                        }
+
+                        if (lordMobile == null && ladyMobile == null && altMobile == null) {
+                            showToast("It is impossible case");
+                            orUserFound = true;
+                        }
+                    }
+
+                    if (!orUserFound) {
+                        readFirebaseRenterDetails();
+                    } else {
+                        showToast(toastMessage);
                     }
                 } else {
                     // No owner was found
@@ -120,7 +189,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         });
     }
 
-    // Read firebase database renter path ==========================================================
+    // Read firebase database's renter's path ======================================================
     private void readFirebaseRenterDetails() {
         // Path reference to the User "Renter"
         DatabaseReference referenceUserRenter = referenceRoot.child(FIREBASE_USER_RENTER_PATH);
@@ -129,7 +198,69 @@ public class PayKeeperMainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
-                    Toast.makeText(PayKeeperMainActivity.this, "Found", Toast.LENGTH_SHORT).show();
+                    for (DataSnapshot renterSnapshot : dataSnapshot.getChildren()) {
+                        RentersOfHouse rentersOfHouse = renterSnapshot.getValue(RentersOfHouse.class);
+
+                        assert rentersOfHouse != null;
+                        String maleName = rentersOfHouse.getRenterNameMale();
+                        String femaleName = rentersOfHouse.getRenterNameFemale();
+                        String displayName = rentersOfHouse.getDisplayName();
+                        String maleMobile = rentersOfHouse.getRenterMaleMobile();
+                        String femaleMobile = rentersOfHouse.getRenterFemaleMobile();
+                        String altMobile = rentersOfHouse.getAlternateMobile();
+
+                        if (maleMobile != null && femaleMobile != null && altMobile != null) {
+                            showToast("All mobile available");
+                            orUserFound = true;
+                        }
+
+                        if (maleMobile != null && femaleMobile != null && altMobile == null) {
+                            showToast("Alternate mobile not available");
+                            orUserFound = true;
+                        }
+
+                        if (maleMobile != null && femaleMobile == null && altMobile != null) {
+                            showToast("Landlady's mobile not available");
+                            orUserFound = true;
+                        }
+
+                        if (maleMobile == null && femaleMobile != null && altMobile != null) {
+                            showToast("Landlord's mobile not available");
+                            orUserFound = true;
+                        }
+
+                        if (maleMobile != null && femaleMobile == null && altMobile == null) {
+                            showToast("Only landlord's mobile available");
+                            orUserFound = true;
+                        }
+
+                        if (maleMobile == null && femaleMobile != null && altMobile == null) {
+                            if (thisUserMobileNumber.equals(femaleMobile)) {
+                                orUserFound = true;
+
+                                toastMessage = femaleMobile;
+                                if (maleName != null) {
+                                    if (femaleName != null) {
+                                        toastMessage = String.format("%s\n%s\n%s\n%s", toastMessage, maleName, femaleName, displayName);
+                                    } else {
+                                        toastMessage = String.format("%s\n%s\n%s", toastMessage, maleName, displayName);
+                                    }
+                                } else {
+                                    toastMessage = String.format("%s\n%s\n%s", toastMessage, femaleName, displayName);
+                                }
+                            }
+                        }
+
+                        if (maleMobile == null && femaleMobile == null && altMobile != null) {
+                            showToast("Only alternate mobile available");
+                            orUserFound = true;
+                        }
+
+                        if (maleMobile == null && femaleMobile == null && altMobile == null) {
+                            showToast("It is impossible case");
+                            orUserFound = true;
+                        }
+                    }
                 } else {
                     startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
                     finish();
