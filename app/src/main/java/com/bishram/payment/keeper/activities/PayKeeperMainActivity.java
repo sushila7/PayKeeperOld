@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bishram.payment.keeper.R;
@@ -27,7 +28,12 @@ import static com.bishram.payment.keeper.Constants.FIREBASE_USER_RENTER_PATH;
 
 public class PayKeeperMainActivity extends AppCompatActivity {
 
+    // Declare view instances below
     private ProgressBar progressBarFetchingData;
+
+    private TextView textViewDisplayName;
+    private TextView textViewORMobile;
+    private TextView textViewUserCategory;
 
     // Declare an instance of FirebaseAuth
     private FirebaseAuth firebaseAuth;
@@ -38,6 +44,9 @@ public class PayKeeperMainActivity extends AppCompatActivity {
     private boolean orUserFound;
 
     private String thisUserMobileNumber;
+    private String displayName;
+    private String displayMobile;
+    private String userCategory;
     private String toastMessage;
 
     @Override
@@ -70,6 +79,10 @@ public class PayKeeperMainActivity extends AppCompatActivity {
     // All initialization related to UI views will go here =========================================
     private void initializeViews() {
         progressBarFetchingData = findViewById(R.id.pb_main_fetching_user_data);
+
+        textViewDisplayName = findViewById(R.id.text_view_main_display_main);
+        textViewORMobile = findViewById(R.id.text_view_main_or_mobile);
+        textViewUserCategory = findViewById(R.id.text_view_main_user_category);
     }
 
     // All initialization related to firebase will go here =========================================
@@ -112,10 +125,11 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                         assert ownersOfHouse != null;
                         String lordName = ownersOfHouse.getLandlordName();
                         String ladyName = ownersOfHouse.getLandladyName();
-                        String displayName = ownersOfHouse.getDisplayName();
+                        displayName = ownersOfHouse.getDisplayName();
                         String lordMobile = ownersOfHouse.getLandlordMobile();
                         String ladyMobile = ownersOfHouse.getLandladyMobile();
                         String altMobile = ownersOfHouse.getAlternateMobile();
+                        userCategory = "House owner";
 
                         if (lordMobile != null && ladyMobile != null && altMobile != null) {
                             showToast("All mobile available");
@@ -146,6 +160,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                             if (thisUserMobileNumber.equals(ladyMobile)) {
                                 orUserFound = true;
 
+                                displayMobile = ladyMobile;
                                 toastMessage = ladyMobile;
                                 if (lordName != null) {
                                     if (ladyName != null) {
@@ -173,7 +188,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                     if (!orUserFound) {
                         readFirebaseRenterDetails();
                     } else {
-                        showToast(toastMessage);
+                        setAccountDetails();
                     }
                 } else {
                     // No owner was found
@@ -272,6 +287,13 @@ public class PayKeeperMainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    // Set the details of the owner/renter =========================================================
+    private void setAccountDetails() {
+        textViewDisplayName.setText(displayName);
+        textViewORMobile.setText(displayMobile);
+        textViewUserCategory.setText(userCategory);
     }
 
     private void showToast(String stringMessage) {

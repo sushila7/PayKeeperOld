@@ -14,6 +14,7 @@
     <string name="ten_digit_mob_no">9912304558</string>
 
     <!-- activity_pay_keeper_main -->
+    <string name="text_account_details">Account details</string>
 
     <!-- activity_pay_keeper_login -->
     <string name="btn_txt_edit">Edit</string>
