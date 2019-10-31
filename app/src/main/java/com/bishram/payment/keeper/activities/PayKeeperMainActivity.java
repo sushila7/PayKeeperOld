@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,9 @@ import static com.bishram.payment.keeper.Constants.FIREBASE_USER_RENTER_PATH;
 public class PayKeeperMainActivity extends AppCompatActivity {
 
     // Declare view instances below
+    private Button buttonOwnersRenters;
+    private Button buttonAboutApp;
+
     private ProgressBar progressBarFetchingData;
 
     private TextView textViewDisplayName;
@@ -78,6 +82,9 @@ public class PayKeeperMainActivity extends AppCompatActivity {
 
     // All initialization related to UI views will go here =========================================
     private void initializeViews() {
+        buttonOwnersRenters = findViewById(R.id.button_main_owners_renters);
+        buttonAboutApp = findViewById(R.id.button_main_about_app);
+
         progressBarFetchingData = findViewById(R.id.pb_main_fetching_user_data);
 
         textViewDisplayName = findViewById(R.id.text_view_main_display_main);
@@ -188,7 +195,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                     if (!orUserFound) {
                         readFirebaseRenterDetails();
                     } else {
-                        setAccountDetails();
+                        setAccountDetails("Owner");
                     }
                 } else {
                     // No owner was found
@@ -284,7 +291,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                         startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
                         finish();
                     } else {
-                        setAccountDetails();
+                        setAccountDetails("Renter");
                     }
                 } else {
                     startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
@@ -300,10 +307,32 @@ public class PayKeeperMainActivity extends AppCompatActivity {
     }
 
     // Set the details of the owner/renter =========================================================
-    private void setAccountDetails() {
+    private void setAccountDetails(String userCategory2) {
         textViewDisplayName.setText(displayName);
         textViewORMobile.setText(displayMobile);
         textViewUserCategory.setText(userCategory);
+
+        switch (userCategory2) {
+            case "Owner":
+                buttonOwnersRenters.setText("All Renters");
+                buttonOwnersRenters.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showToast("Implemented soon");
+                    }
+                });
+                break;
+
+            case "Renter":
+                buttonOwnersRenters.setText("All Owners");
+                buttonOwnersRenters.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showToast("Implemented soon");
+                    }
+                });
+                break;
+        }
     }
 
     private void showToast(String stringMessage) {

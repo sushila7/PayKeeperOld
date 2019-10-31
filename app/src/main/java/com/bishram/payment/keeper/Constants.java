@@ -16,4 +16,10 @@ public class Constants {
 
     // Path for the renter
     public static final String FIREBASE_USER_RENTER_PATH = "users/renters";
+
+    // Path for the list of renters rented an owner
+    public static final String FIREBASE_OWNERS_RENTED_PATH = "owned_rented/owners";
+
+    // Path for the list of owners owned by a renter
+    public static final String FIREBASE_RENTERS_OWNED_PATH = "owned_rented/renters";
 }

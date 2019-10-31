@@ -9,6 +9,7 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -21,7 +22,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_margin="32dp"
                 android:orientation="vertical">
 
@@ -45,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
-                    tools:text="+91 9199394730" />
+                    tools:text="+919199394730" />
 
                 <TextView
                     android:id="@+id/text_view_main_user_category"
@@ -55,10 +57,42 @@
                     tools:text="House owner" />
             </LinearLayout>
 
-            <View
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#000" />
+                android:layout_height="wrap_content"
+                android:layout_margin="32dp"
+                android:background="@drawable/background_outline_main_explore_menu"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/button_main_owners_renters"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="1px"
+                    android:layout_marginTop="1px"
+                    android:layout_marginEnd="1px"
+                    android:background="@drawable/background_button_top_6dp"
+                    android:gravity="start|center_vertical"
+                    android:padding="24dp"
+                    tools:text="Owned or Rented" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#A7A7A7" />
+
+                <Button
+                    android:id="@+id/button_main_about_app"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="1px"
+                    android:layout_marginEnd="1px"
+                    android:layout_marginBottom="1px"
+                    android:background="@drawable/background_button_bottom_6dp"
+                    android:gravity="start|center_vertical"
+                    android:padding="24dp"
+                    android:text="@string/text_about_app" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
