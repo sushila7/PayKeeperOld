@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -73,6 +75,22 @@ public class PayKeeperMainActivity extends AppCompatActivity {
             thisUserMobileNumber = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getPhoneNumber();
             readFirebaseOwnerDetails();
         }
+
+        buttonAboutApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    PackageInfo pInfo = getApplicationContext().getPackageManager()
+                            .getPackageInfo(getPackageName(), 0);
+                    String versionName = String.format("Version%s", pInfo.versionName.substring(3));
+
+                    showToast(versionName);
+                } catch (PackageManager.NameNotFoundException exception) {
+                    exception.printStackTrace();
+                }
+
+            }
+        });
     }
 
     @Override
