@@ -11,7 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activities.PayKeeperMainActivity"
+        <activity
+            android:name=".activities.PayKeeperMainActivity"
+            android:label="@string/main_action_bar_title"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,8 +28,13 @@
             android:label="@string/login_action_bar_title"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".activities.UserRegistrationActivity"
-            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".activities.UserRegistrationActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.OwnersRentersListActivity"
+            android:label="@string/or_list_action_bar_title" />
     </application>
 
 </manifest>

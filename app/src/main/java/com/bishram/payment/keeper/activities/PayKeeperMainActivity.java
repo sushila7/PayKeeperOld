@@ -336,7 +336,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                 buttonOwnersRenters.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showToast("Implemented soon");
+                        startActivity(new Intent(PayKeeperMainActivity.this, OwnersRentersListActivity.class));
                     }
                 });
                 break;
@@ -346,7 +346,7 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                 buttonOwnersRenters.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showToast("Implemented soon");
+                        startActivity(new Intent(PayKeeperMainActivity.this, OwnersRentersListActivity.class));
                     }
                 });
                 break;
