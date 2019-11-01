@@ -2,20 +2,28 @@
     <!-- Name of the application -->
     <string name="app_name">PayKeeper</string>
 
-    <!-- Action bar titles -->
+    <!-- Action bar titles ===================================================================== -->
+
+    <!-- Main Activity action bar title -->
+    <string name="main_action_bar_title">Payment Keeper</string>
+
     <!-- Login activity action bar title -->
     <string name="login_action_bar_title">Sign Into Your Account</string>
+
+    <!-- Action bar title for the AddOwnerRenterActivity when accessing Owner -->
+    <string name="add_new_owner_action_bar_title">Add new owner</string>
+
+    <!-- Action bar title for the AddOwnerRenterActivity when accessing Renter -->
+    <string name="add_new_renter_action_bar_title">Add new renter</string>
 
     <!-- Country codes -->
     <!-- Indian country code -->
     <string name="country_code_india">+91</string>
 
     <!-- Ten digit mobile number example -->
-    <string name="ten_digit_mob_no">9912304558</string>
+    <string name="ten_digit_mob_no">9876543210</string>
 
     <!-- activity_pay_keeper_main -->
-    <!-- Main Activity action bar title -->
-    <string name="main_action_bar_title">Payment Keeper</string>
     <string name="text_account_details">Account details</string>
     <string name="text_about_app">About app</string>
 
@@ -27,4 +35,9 @@
     <string name="hint_six_digit_v_code">6 digit Verification code</string>
     <string name="btn_txt_clear">Clear</string>
     <string name="or_list_action_bar_title">My Owners/Renters List</string>
+
+
+    <!-- activity_add_owner_renter ============================================================= -->
+    <string name="text_continue">Continue</string>
+
 </resources>
