@@ -53,6 +53,7 @@ public class AddOwnerRenterActivity extends AppCompatActivity implements View.On
 
     private String stringUser;
     private String stringNickname;
+    private String stringMobile;
     private String stringRentPaying;
     private String stringOwnerUID;
     private String stringRenterUID;
@@ -185,7 +186,7 @@ public class AddOwnerRenterActivity extends AppCompatActivity implements View.On
                                 editTextRent.requestFocus();
                             } else {
                                 editTextName.setText("");
-                                editTextRent.requestFocus();
+                                editTextName.requestFocus();
                             }
                             break;
 
@@ -252,7 +253,7 @@ public class AddOwnerRenterActivity extends AppCompatActivity implements View.On
                 if (readingFdbCompleted) {
                     switch (stringUser) {
                         case USER_OWNER:
-                            if (userAlreadyAvailable) {
+                            if (userAlreadyAvailable) { //renter is available
                                 stringRentPaying = editTextRent.getText().toString().trim();
 
                                 if (!stringRentPaying.isEmpty()) {
@@ -275,27 +276,40 @@ public class AddOwnerRenterActivity extends AppCompatActivity implements View.On
                                     finish();
                                 }
                             } else {
+                                stringNickname = editTextName.getText().toString().trim();
+                                stringMobile = editTextMobile.getText().toString().trim();
                                 stringRentPaying = editTextRent.getText().toString().trim();
 
-                                if (!stringRentPaying.isEmpty()) {
-                                    DatabaseReference ownerRentedRef = FirebaseDatabase.getInstance().getReference().child(FIREBASE_OWNERS_RENTED_PATH);
+                                DatabaseReference referenceToRenter = FirebaseDatabase.getInstance().getReference().child(FIREBASE_USER_RENTER_PATH);
+                                final String pushKey = referenceToRenter.push().getKey();
 
-                                    stringRenterUID = ownerRentedRef.push().getKey();
+                                assert pushKey != null;
 
-                                    OwnerRenterList ownerRenterList = new OwnerRenterList(stringNickname, stringRentPaying, "Active", stringRenterUID);
+                                final RentersOfHouse rentersOfHouse = new RentersOfHouse(stringNickname, null, "Mr. & Mrs.", null, null, stringMobile, pushKey);
+                                referenceToRenter.child(pushKey).setValue(rentersOfHouse).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            DatabaseReference referenceToOwnerRented = FirebaseDatabase.getInstance().getReference().child(FIREBASE_OWNERS_RENTED_PATH);
 
-                                    ownerRentedRef.child(stringOwnerUID).child(stringRenterUID).setValue(ownerRenterList).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(AddOwnerRenterActivity.this, "Saved successfully", Toast.LENGTH_SHORT).show();
-                                                finish();
-                                            } else {
-                                                Toast.makeText(AddOwnerRenterActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
-                                            }
+                                            OwnerRenterList ownerRenterList = new OwnerRenterList(stringNickname, stringRentPaying, "Active", pushKey);
+                                            referenceToOwnerRented.child(stringOwnerUID).child(pushKey).setValue(ownerRenterList).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Toast.makeText(AddOwnerRenterActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+                                                        finish();
+                                                    } else {
+                                                        Toast.makeText(AddOwnerRenterActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                                                        finish();
+                                                    }
+                                                }
+                                            });
                                         }
-                                    });
-                                }
+                                    }
+                                });
+
+
                             }
                             break;
 
