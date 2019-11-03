@@ -23,12 +23,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_margin="32dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/text_account_details"
                     android:textColor="@android:color/black"
@@ -38,7 +39,7 @@
                     android:id="@+id/text_view_main_display_main"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="16dp"
                     android:textSize="17sp"
                     tools:text="Display name" />
 
@@ -46,6 +47,7 @@
                     android:id="@+id/text_view_main_or_mobile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:textSize="15sp"
                     tools:text="+919199394730" />
 
@@ -53,6 +55,7 @@
                     android:id="@+id/text_view_main_user_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:textSize="12sp"
                     tools:text="House owner" />
             </LinearLayout>

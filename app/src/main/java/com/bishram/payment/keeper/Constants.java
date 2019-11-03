@@ -7,6 +7,12 @@ public class Constants {
     // Country codes
     public static final String COUNTRY_CODE_INDIA = "+91";
 
+    public static final String KEY_USER = "user_type";
+    public static final String KEY_OWNER = "key_owner";
+    public static final String KEY_RENTER = "key_renter";
+    public static final String USER_OWNER = "Owner";
+    public static final String USER_RENTER = "Renter";
+
     // Phone number verification time out
     public static final long REQUEST_TIME_OUT = 60;
 

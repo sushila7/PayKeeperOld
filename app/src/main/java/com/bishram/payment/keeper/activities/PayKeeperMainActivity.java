@@ -24,12 +24,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 import static com.bishram.payment.keeper.Constants.FIREBASE_USER_OWNER_PATH;
 import static com.bishram.payment.keeper.Constants.FIREBASE_USER_RENTER_PATH;
+import static com.bishram.payment.keeper.Constants.KEY_USER;
+import static com.bishram.payment.keeper.Constants.USER_OWNER;
+import static com.bishram.payment.keeper.Constants.USER_RENTER;
 
-public class PayKeeperMainActivity extends AppCompatActivity {
+public class PayKeeperMainActivity extends AppCompatActivity implements View.OnClickListener{
 
     // Declare view instances below
     private Button buttonOwnersRenters;
@@ -41,13 +44,12 @@ public class PayKeeperMainActivity extends AppCompatActivity {
     private TextView textViewORMobile;
     private TextView textViewUserCategory;
 
-    // Declare an instance of FirebaseAuth
-    private FirebaseAuth firebaseAuth;
+    private FirebaseUser currentUser;
 
     // Declare an instance of root path of Realtime Database
     private DatabaseReference referenceRoot;
 
-    private boolean orUserFound;
+    private boolean userFound;
 
     private String thisUserMobileNumber;
     private String displayName;
@@ -66,36 +68,13 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         // Initialize firebase objects
         initializeFirebase();
 
-        if (!checkUser()) {
-            // No logged user if found. In case Goto login activity
-            startActivity(new Intent(PayKeeperMainActivity.this, PayKeeperLoginActivity.class));
-            finish();
-        } else {
-            // Logged user is found
-            thisUserMobileNumber = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getPhoneNumber();
+        setButtonClickListeners();
+
+        if (currentUser != null) {
+            thisUserMobileNumber = currentUser.getPhoneNumber();
+            userFound = false;
             readFirebaseOwnerDetails();
         }
-
-        buttonAboutApp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    PackageInfo pInfo = getApplicationContext().getPackageManager()
-                            .getPackageInfo(getPackageName(), 0);
-                    String versionName = String.format("Version%s", pInfo.versionName.substring(3));
-
-                    showToast(versionName);
-                } catch (PackageManager.NameNotFoundException exception) {
-                    exception.printStackTrace();
-                }
-
-            }
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     // All initialization related to UI views will go here =========================================
@@ -108,25 +87,20 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         textViewDisplayName = findViewById(R.id.text_view_main_display_main);
         textViewORMobile = findViewById(R.id.text_view_main_or_mobile);
         textViewUserCategory = findViewById(R.id.text_view_main_user_category);
+
+        userFound = false;
     }
 
     // All initialization related to firebase will go here =========================================
     private void initializeFirebase() {
         // Initialize Firebase Auth
-        firebaseAuth = FirebaseAuth.getInstance();
+        // Declare an instance of FirebaseAuth
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        currentUser = firebaseAuth.getCurrentUser();
 
         // Path Reference to the root of the Realtime Database
         referenceRoot = FirebaseDatabase.getInstance().getReference();
-    }
-
-    // Checks the user whether he/she is authenticated or not ======================================
-    private boolean checkUser() {
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-        // Return "true" or "false" according to the logged in condition of user
-        // True if any user is logged in
-        // False if no user is logged in
-        return currentUser != null;
     }
 
     // Read firebase database's owner's path =======================================================
@@ -134,12 +108,9 @@ public class PayKeeperMainActivity extends AppCompatActivity {
         // Path reference to the User "Owner"
         DatabaseReference referenceUserOwner = referenceRoot.child(FIREBASE_USER_OWNER_PATH);
 
-        progressBarFetchingData.setVisibility(View.VISIBLE);
-
         referenceUserOwner.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                orUserFound = false;
 
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
                     progressBarFetchingData.setVisibility(View.GONE);
@@ -148,77 +119,66 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                         OwnersOfHouse ownersOfHouse = userSnapshot.getValue(OwnersOfHouse.class);
 
                         assert ownersOfHouse != null;
-                        String lordName = ownersOfHouse.getLandlordName();
-                        String ladyName = ownersOfHouse.getLandladyName();
+
+                        String landlordMobile = ownersOfHouse.getLandlordMobile();
+                        String landladyMobile = ownersOfHouse.getLandladyMobile();
+                        String alternateMobile = ownersOfHouse.getAlternateMobile();
+
                         displayName = ownersOfHouse.getDisplayName();
-                        String lordMobile = ownersOfHouse.getLandlordMobile();
-                        String ladyMobile = ownersOfHouse.getLandladyMobile();
-                        String altMobile = ownersOfHouse.getAlternateMobile();
-                        userCategory = "House Owner";
 
-                        if (lordMobile != null && ladyMobile != null && altMobile != null) {
-                            showToast("All mobile available");
-                            orUserFound = true;
-                        }
-
-                        if (lordMobile != null && ladyMobile != null && altMobile == null) {
-                            showToast("Alternate mobile not available");
-                            orUserFound = true;
-                        }
-
-                        if (lordMobile != null && ladyMobile == null && altMobile != null) {
-                            showToast("Landlady's mobile not available");
-                            orUserFound = true;
-                        }
-
-                        if (lordMobile == null && ladyMobile != null && altMobile != null) {
-                            showToast("Landlord's mobile not available");
-                            orUserFound = true;
-                        }
-
-                        if (lordMobile != null && ladyMobile == null && altMobile == null) {
-                            showToast("Only landlord's mobile available");
-                            orUserFound = true;
-                        }
-
-                        if (lordMobile == null && ladyMobile != null && altMobile == null) {
-                            if (thisUserMobileNumber.equals(ladyMobile)) {
-                                orUserFound = true;
-
-                                displayMobile = ladyMobile;
-                                toastMessage = ladyMobile;
-                                if (lordName != null) {
-                                    if (ladyName != null) {
-                                        toastMessage = String.format("%s\n%s\n%s\n%s", toastMessage, lordName, ladyName, displayName);
-                                    } else {
-                                        toastMessage = String.format("%s\n%s\n%s", toastMessage, lordName, displayName);
+                        if (landlordMobile != null) {
+                            if (landladyMobile != null) {
+                                if (alternateMobile != null) {
+                                    if (thisUserMobileNumber.equals(landlordMobile) ||
+                                            thisUserMobileNumber.equals(landladyMobile) ||
+                                            thisUserMobileNumber.equals(alternateMobile)) {
+                                        userFound = true;
+                                        userCategory = USER_OWNER;
                                     }
                                 } else {
-                                    toastMessage = String.format("%s\n%s\n%s", toastMessage, ladyName, displayName);
+                                    if (thisUserMobileNumber.equals(landlordMobile) ||
+                                            thisUserMobileNumber.equals(landladyMobile)) {
+                                        userFound = true;
+                                        userCategory = USER_OWNER;
+                                    }
+                                }
+                            } else if (alternateMobile != null) {
+                                if (thisUserMobileNumber.equals(landlordMobile) || thisUserMobileNumber.equals(alternateMobile)) {
+                                    userFound = true;
+                                    userCategory = USER_OWNER;
+                                }
+                            } else {
+                                if (thisUserMobileNumber.equals(landlordMobile)) {
+                                    userFound = true;
+                                    userCategory = USER_OWNER;
                                 }
                             }
-                        }
-
-                        if (lordMobile == null && ladyMobile == null && altMobile != null) {
-                            showToast("Only alternate mobile available");
-                            orUserFound = true;
-                        }
-
-                        if (lordMobile == null && ladyMobile == null && altMobile == null) {
-                            showToast("It is impossible case");
-                            orUserFound = true;
+                        } else if (landladyMobile != null) {
+                            if (alternateMobile != null) {
+                                if (thisUserMobileNumber.equals(landladyMobile) || thisUserMobileNumber.equals(alternateMobile)) {
+                                    userFound = true;
+                                    userCategory = USER_OWNER;
+                                }
+                            } else {
+                                if (thisUserMobileNumber.equals(landladyMobile)) {
+                                    userFound = true;
+                                    userCategory = USER_OWNER;
+                                    displayMobile = landladyMobile;
+                                }
+                            }
+                        } else {
+                            if (thisUserMobileNumber.equals(alternateMobile)) {
+                                userFound = true;
+                                userCategory = USER_OWNER;
+                            }
                         }
                     }
 
-                    if (!orUserFound) {
-                        readFirebaseRenterDetails();
+                    if (userFound) {
+                        setAccountDetails(userCategory);
                     } else {
-                        setAccountDetails("Owner");
+                        readFirebaseRenterDetails();
                     }
-                } else {
-                    // No owner was found
-                    // So, read renter's path
-                    readFirebaseRenterDetails();
                 }
             }
 
@@ -240,7 +200,6 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
                     for (DataSnapshot renterSnapshot : dataSnapshot.getChildren()) {
                         RentersOfHouse rentersOfHouse = renterSnapshot.getValue(RentersOfHouse.class);
-                        orUserFound = false;
 
                         assert rentersOfHouse != null;
                         String maleName = rentersOfHouse.getRenterNameMale();
@@ -249,71 +208,8 @@ public class PayKeeperMainActivity extends AppCompatActivity {
                         String femaleMobile = rentersOfHouse.getRenterFemaleMobile();
                         String altMobile = rentersOfHouse.getAlternateMobile();
                         displayName = rentersOfHouse.getDisplayName();
-                        userCategory = "House Renter";
-
-                        if (maleMobile != null && femaleMobile != null && altMobile != null) {
-                            showToast("All mobile available");
-                            orUserFound = true;
-                        }
-
-                        if (maleMobile != null && femaleMobile != null && altMobile == null) {
-                            showToast("Alternate mobile not available");
-                            orUserFound = true;
-                        }
-
-                        if (maleMobile != null && femaleMobile == null && altMobile != null) {
-                            orUserFound = true;
-
-                            displayMobile = maleMobile;
-                        }
-
-                        if (maleMobile == null && femaleMobile != null && altMobile != null) {
-                            showToast("Landlord's mobile not available");
-                            orUserFound = true;
-                        }
-
-                        if (maleMobile != null && femaleMobile == null && altMobile == null) {
-                            showToast("Only landlord's mobile available");
-                            orUserFound = true;
-                        }
-
-                        if (maleMobile == null && femaleMobile != null && altMobile == null) {
-                            if (thisUserMobileNumber.equals(femaleMobile)) {
-                                orUserFound = true;
-
-                                toastMessage = femaleMobile;
-                                if (maleName != null) {
-                                    if (femaleName != null) {
-                                        toastMessage = String.format("%s\n%s\n%s\n%s", toastMessage, maleName, femaleName, displayName);
-                                    } else {
-                                        toastMessage = String.format("%s\n%s\n%s", toastMessage, maleName, displayName);
-                                    }
-                                } else {
-                                    toastMessage = String.format("%s\n%s\n%s", toastMessage, femaleName, displayName);
-                                }
-                            }
-                        }
-
-                        if (maleMobile == null && femaleMobile == null && altMobile != null) {
-                            showToast("Only alternate mobile available");
-                            orUserFound = true;
-                        }
-
-                        if (maleMobile == null && femaleMobile == null && altMobile == null) {
-                            showToast("It is impossible case");
-                            orUserFound = true;
-                        }
+                        userCategory = USER_RENTER;
                     }
-
-                    if (!orUserFound) {
-                        startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
-                        finish();
-                    } else {
-                        setAccountDetails("Renter");
-                    }
-                } else {
-                    startActivity(new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class));
-                    finish();
                 }
             }
 
@@ -325,35 +221,56 @@ public class PayKeeperMainActivity extends AppCompatActivity {
     }
 
     // Set the details of the owner/renter =========================================================
-    private void setAccountDetails(String userCategory2) {
+    private void setAccountDetails(String userCategory) {
         textViewDisplayName.setText(displayName);
         textViewORMobile.setText(displayMobile);
-        textViewUserCategory.setText(userCategory);
+        textViewUserCategory.setText(String.format("House %s", userCategory));
 
-        switch (userCategory2) {
-            case "Owner":
-                buttonOwnersRenters.setText("All Renters");
-                buttonOwnersRenters.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(PayKeeperMainActivity.this, OwnersRentersListActivity.class));
-                    }
-                });
+        switch (userCategory) {
+            case USER_OWNER:
+                buttonOwnersRenters.setText("My Renters");
                 break;
 
-            case "Renter":
-                buttonOwnersRenters.setText("All Owners");
-                buttonOwnersRenters.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(PayKeeperMainActivity.this, OwnersRentersListActivity.class));
-                    }
-                });
+            case USER_RENTER:
+                buttonOwnersRenters.setText("My Owners");
                 break;
         }
     }
 
     private void showToast(String stringMessage) {
         Toast.makeText(this, stringMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    private void setButtonClickListeners() {
+        buttonOwnersRenters.setOnClickListener(this);
+        buttonAboutApp.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(@NotNull View view) {
+        switch (view.getId()) {
+            case R.id.button_main_owners_renters:
+                if (userFound) {
+                    Intent intent = new Intent(PayKeeperMainActivity.this,
+                            OwnersRentersListActivity.class);
+                    intent.putExtra(KEY_USER, userCategory);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Please wait while reading...", Toast.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.button_main_about_app:
+                try {
+                    PackageInfo pInfo = getApplicationContext().getPackageManager()
+                            .getPackageInfo(getPackageName(), 0);
+                    String versionName = String.format("Version%s", pInfo.versionName.substring(3));
+
+                    showToast(versionName);
+                } catch (PackageManager.NameNotFoundException exception) {
+                    exception.printStackTrace();
+                }
+                break;
+        }
     }
 }
