@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.bishram.payment.keeper.Constants.FIREBASE_USER_OWNER_PATH;
 import static com.bishram.payment.keeper.Constants.FIREBASE_USER_RENTER_PATH;
+import static com.bishram.payment.keeper.Constants.KEY_UID;
 import static com.bishram.payment.keeper.Constants.KEY_USER;
 import static com.bishram.payment.keeper.Constants.USER_OWNER;
 import static com.bishram.payment.keeper.Constants.USER_RENTER;
@@ -55,6 +56,7 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
     private String displayName;
     private String displayMobile;
     private String userCategory;
+    private String ownerRenterUID;
     private String toastMessage;
 
     @Override
@@ -134,23 +136,27 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                                             thisUserMobileNumber.equals(alternateMobile)) {
                                         userFound = true;
                                         userCategory = USER_OWNER;
+                                        ownerRenterUID = ownersOfHouse.getUniqueID();
                                     }
                                 } else {
                                     if (thisUserMobileNumber.equals(landlordMobile) ||
                                             thisUserMobileNumber.equals(landladyMobile)) {
                                         userFound = true;
                                         userCategory = USER_OWNER;
+                                        ownerRenterUID = ownersOfHouse.getUniqueID();
                                     }
                                 }
                             } else if (alternateMobile != null) {
                                 if (thisUserMobileNumber.equals(landlordMobile) || thisUserMobileNumber.equals(alternateMobile)) {
                                     userFound = true;
                                     userCategory = USER_OWNER;
+                                    ownerRenterUID = ownersOfHouse.getUniqueID();
                                 }
                             } else {
                                 if (thisUserMobileNumber.equals(landlordMobile)) {
                                     userFound = true;
                                     userCategory = USER_OWNER;
+                                    ownerRenterUID = ownersOfHouse.getUniqueID();
                                 }
                             }
                         } else if (landladyMobile != null) {
@@ -158,18 +164,21 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                                 if (thisUserMobileNumber.equals(landladyMobile) || thisUserMobileNumber.equals(alternateMobile)) {
                                     userFound = true;
                                     userCategory = USER_OWNER;
+                                    ownerRenterUID = ownersOfHouse.getUniqueID();
                                 }
                             } else {
                                 if (thisUserMobileNumber.equals(landladyMobile)) {
                                     userFound = true;
                                     userCategory = USER_OWNER;
                                     displayMobile = landladyMobile;
+                                    ownerRenterUID = ownersOfHouse.getUniqueID();
                                 }
                             }
                         } else {
                             if (thisUserMobileNumber.equals(alternateMobile)) {
                                 userFound = true;
                                 userCategory = USER_OWNER;
+                                ownerRenterUID = ownersOfHouse.getUniqueID();
                             }
                         }
                     }
@@ -254,6 +263,7 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                     Intent intent = new Intent(PayKeeperMainActivity.this,
                             OwnersRentersListActivity.class);
                     intent.putExtra(KEY_USER, userCategory);
+                    intent.putExtra(KEY_UID, ownerRenterUID);
                     startActivity(intent);
                 } else {
                     Toast.makeText(this, "Please wait while reading...", Toast.LENGTH_LONG).show();

@@ -10,6 +10,7 @@ public class Constants {
     public static final String KEY_USER = "user_type";
     public static final String KEY_OWNER = "key_owner";
     public static final String KEY_RENTER = "key_renter";
+    public static final String KEY_UID = "key_uid";
     public static final String USER_OWNER = "Owner";
     public static final String USER_RENTER = "Renter";
 
