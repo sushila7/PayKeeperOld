@@ -30,6 +30,7 @@ import static com.bishram.payment.keeper.Constants.USER_RENTER;
 
 public class OwnersRentersListActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private Button buttonAddORBottom;
     private Button buttonAddORMiddle;
 
     private ListView listViewORL;
@@ -72,6 +73,8 @@ public class OwnersRentersListActivity extends AppCompatActivity implements View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_or_list_add_new_or_middle:
+
+            case R.id.button_or_list_add_new_or_bottom:
                 Intent intent = new Intent(OwnersRentersListActivity.this, AddOwnerRenterActivity.class);
                 intent.putExtra(KEY_USER, stringUser);
                 startActivity(intent);
@@ -80,6 +83,7 @@ public class OwnersRentersListActivity extends AppCompatActivity implements View
     }
 
     private void initializeViews() {
+        buttonAddORBottom = findViewById(R.id.button_or_list_add_new_or_bottom);
         buttonAddORMiddle = findViewById(R.id.button_or_list_add_new_or_middle);
 
         listViewORL = findViewById(R.id.list_view_or_list);
@@ -97,6 +101,7 @@ public class OwnersRentersListActivity extends AppCompatActivity implements View
 
     private void setButtonClickListeners() {
         buttonAddORMiddle.setOnClickListener(this);
+        buttonAddORBottom.setOnClickListener(this);
     }
 
     // Read 'Owners rented' firebase path
@@ -107,6 +112,8 @@ public class OwnersRentersListActivity extends AppCompatActivity implements View
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
+                    arrayAdapterORL.clear();
+
                     for (DataSnapshot orSnapshot : dataSnapshot.getChildren()) {
                         OwnerRenterList ownerRenterList = orSnapshot.getValue(OwnerRenterList.class);
 
