@@ -1,6 +1,7 @@
 package com.bishram.payment.keeper.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,8 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bishram.payment.keeper.R;
-import com.bishram.payment.keeper.models.OwnersOfHouse;
-import com.bishram.payment.keeper.models.RentersOfHouse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,263 +23,206 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
-import static com.bishram.payment.keeper.Constants.FIREBASE_USER_OWNER_PATH;
-import static com.bishram.payment.keeper.Constants.FIREBASE_USER_RENTER_PATH;
+import static com.bishram.payment.keeper.Constants.FIREBASE_USERS_OWNERS_BASIC_PATH;
+import static com.bishram.payment.keeper.Constants.FIREBASE_USERS_RENTERS_BASIC_PATH;
+import static com.bishram.payment.keeper.Constants.KEY_CATEGORY;
+import static com.bishram.payment.keeper.Constants.KEY_PHONE_NUM;
 import static com.bishram.payment.keeper.Constants.KEY_UID;
-import static com.bishram.payment.keeper.Constants.KEY_USER;
 import static com.bishram.payment.keeper.Constants.USER_OWNER;
 import static com.bishram.payment.keeper.Constants.USER_RENTER;
 
-public class PayKeeperMainActivity extends AppCompatActivity implements View.OnClickListener{
+public class PayKeeperMainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // Declare view instances below
     private Button buttonOwnersRenters;
     private Button buttonAboutApp;
+    private Button buttonSignOut;
 
-    private ProgressBar progressBarFetchingData;
+    private ProgressBar progressBar;
 
-    private TextView textViewDisplayName;
-    private TextView textViewORMobile;
-    private TextView textViewUserCategory;
+    private TextView textViewName;
+    private TextView textViewPhoneNum;
+    private TextView textViewCategory;
 
-    private FirebaseUser currentUser;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+    private DatabaseReference referenceUserOwnerBasic;
+    private DatabaseReference referenceUserRenterBasic;
 
-    // Declare an instance of root path of Realtime Database
-    private DatabaseReference referenceRoot;
+    private boolean readComplete;
 
-    private boolean userFound;
-
-    private String thisUserMobileNumber;
-    private String displayName;
-    private String displayMobile;
-    private String userCategory;
-    private String ownerRenterUID;
-    private String toastMessage;
+    private String mPhoneNumber;
+    private String mCategory;
+    private String mUid;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // The user interface (UI)
         setContentView(R.layout.activity_main_pay_keeper);
 
-        // Initialize xml view objects
-        initializeViews();
+        boolean hasUser = checkUserHasLogged();
 
-        // Initialize firebase objects
-        initializeFirebase();
+        readComplete = false;
 
-        setButtonClickListeners();
+        initializeFirebaseOb();
+        initializeViewOb();
+        setClickListeners();
 
-        if (currentUser != null) {
-            thisUserMobileNumber = currentUser.getPhoneNumber();
-            userFound = false;
-            readFirebaseOwnerDetails();
+        if (!hasUser) {
+            mPhoneNumber = mUser.getPhoneNumber();
+            mUid = mUser.getUid();
+
+            progressBar.setVisibility(View.VISIBLE);
+
+            readFirebaseDatabase();
+        } else {
+            Toast.makeText(this, "No user signed in!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(PayKeeperMainActivity.this, PayKeeperLoginActivity.class));
+            finish();
         }
     }
 
-    // All initialization related to UI views will go here =========================================
-    private void initializeViews() {
+    private void initializeFirebaseOb() {
+        DatabaseReference referenceRootPath = FirebaseDatabase.getInstance().getReference();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mUser = mAuth.getCurrentUser();
+
+        referenceUserOwnerBasic = referenceRootPath.child(FIREBASE_USERS_OWNERS_BASIC_PATH);
+        referenceUserRenterBasic = referenceRootPath.child(FIREBASE_USERS_RENTERS_BASIC_PATH);
+    }
+
+    private void initializeViewOb() {
         buttonOwnersRenters = findViewById(R.id.button_main_owners_renters);
         buttonAboutApp = findViewById(R.id.button_main_about_app);
+        buttonSignOut = findViewById(R.id.button_main_sign_out);
 
-        progressBarFetchingData = findViewById(R.id.pb_main_fetching_user_data);
+        progressBar = findViewById(R.id.pb_main_fetching_user_data);
 
-        textViewDisplayName = findViewById(R.id.text_view_main_display_main);
-        textViewORMobile = findViewById(R.id.text_view_main_or_mobile);
-        textViewUserCategory = findViewById(R.id.text_view_main_user_category);
-
-        userFound = false;
+        textViewName = findViewById(R.id.text_view_main_display_main);
+        textViewPhoneNum = findViewById(R.id.text_view_main_or_mobile);
+        textViewCategory = findViewById(R.id.text_view_main_user_category);
     }
 
-    // All initialization related to firebase will go here =========================================
-    private void initializeFirebase() {
-        // Initialize Firebase Auth
-        // Declare an instance of FirebaseAuth
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-        currentUser = firebaseAuth.getCurrentUser();
-
-        // Path Reference to the root of the Realtime Database
-        referenceRoot = FirebaseDatabase.getInstance().getReference();
+    private void setClickListeners() {
+        buttonOwnersRenters.setOnClickListener(this);
+        buttonAboutApp.setOnClickListener(this);
+        buttonSignOut.setOnClickListener(this);
     }
 
-    // Read firebase database's owner's path =======================================================
-    private void readFirebaseOwnerDetails() {
-        // Path reference to the User "Owner"
-        DatabaseReference referenceUserOwner = referenceRoot.child(FIREBASE_USER_OWNER_PATH);
+    private boolean checkUserHasLogged() {
+        return mUser != null;
+    }
 
-        referenceUserOwner.addValueEventListener(new ValueEventListener() {
+    private void readFirebaseDatabase() {
+        referenceUserOwnerBasic.child(mUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
-                    progressBarFetchingData.setVisibility(View.GONE);
 
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        OwnersOfHouse ownersOfHouse = userSnapshot.getValue(OwnersOfHouse.class);
+                    for (DataSnapshot snapshotItem : dataSnapshot.getChildren()) {
+                        if (Objects.equals(snapshotItem.getKey(), "userName")) {
+                            String userName = snapshotItem.getValue(String.class);
 
-                        assert ownersOfHouse != null;
+                            mCategory = USER_OWNER;
 
-                        String landlordMobile = ownersOfHouse.getLandlordMobile();
-                        String landladyMobile = ownersOfHouse.getLandladyMobile();
-                        String alternateMobile = ownersOfHouse.getAlternateMobile();
+                            textViewName.setText(userName);
+                            textViewPhoneNum.setText(mPhoneNumber);
+                            textViewCategory.setText(getString(R.string.tv_text_house_owner));
 
-                        displayName = ownersOfHouse.getDisplayName();
-
-                        if (landlordMobile != null) {
-                            if (landladyMobile != null) {
-                                if (alternateMobile != null) {
-                                    if (thisUserMobileNumber.equals(landlordMobile) ||
-                                            thisUserMobileNumber.equals(landladyMobile) ||
-                                            thisUserMobileNumber.equals(alternateMobile)) {
-                                        userFound = true;
-                                        userCategory = USER_OWNER;
-                                        ownerRenterUID = ownersOfHouse.getUniqueID();
-                                    }
-                                } else {
-                                    if (thisUserMobileNumber.equals(landlordMobile) ||
-                                            thisUserMobileNumber.equals(landladyMobile)) {
-                                        userFound = true;
-                                        userCategory = USER_OWNER;
-                                        ownerRenterUID = ownersOfHouse.getUniqueID();
-                                    }
-                                }
-                            } else if (alternateMobile != null) {
-                                if (thisUserMobileNumber.equals(landlordMobile) || thisUserMobileNumber.equals(alternateMobile)) {
-                                    userFound = true;
-                                    userCategory = USER_OWNER;
-                                    ownerRenterUID = ownersOfHouse.getUniqueID();
-                                }
-                            } else {
-                                if (thisUserMobileNumber.equals(landlordMobile)) {
-                                    userFound = true;
-                                    userCategory = USER_OWNER;
-                                    ownerRenterUID = ownersOfHouse.getUniqueID();
-                                }
-                            }
-                        } else if (landladyMobile != null) {
-                            if (alternateMobile != null) {
-                                if (thisUserMobileNumber.equals(landladyMobile) || thisUserMobileNumber.equals(alternateMobile)) {
-                                    userFound = true;
-                                    userCategory = USER_OWNER;
-                                    ownerRenterUID = ownersOfHouse.getUniqueID();
-                                }
-                            } else {
-                                if (thisUserMobileNumber.equals(landladyMobile)) {
-                                    userFound = true;
-                                    userCategory = USER_OWNER;
-                                    displayMobile = landladyMobile;
-                                    ownerRenterUID = ownersOfHouse.getUniqueID();
-                                }
-                            }
-                        } else {
-                            if (thisUserMobileNumber.equals(alternateMobile)) {
-                                userFound = true;
-                                userCategory = USER_OWNER;
-                                ownerRenterUID = ownersOfHouse.getUniqueID();
-                            }
+                            buttonOwnersRenters.setText(getString(R.string.btn_text_my_renters));
                         }
                     }
 
-                    if (userFound) {
-                        setAccountDetails(userCategory);
-                    } else {
-                        readFirebaseRenterDetails();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    // Read firebase database's renter's path ======================================================
-    private void readFirebaseRenterDetails() {
-        // Path reference to the User "Renter"
-        DatabaseReference referenceUserRenter = referenceRoot.child(FIREBASE_USER_RENTER_PATH);
-
-        referenceUserRenter.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
-                    for (DataSnapshot renterSnapshot : dataSnapshot.getChildren()) {
-                        RentersOfHouse rentersOfHouse = renterSnapshot.getValue(RentersOfHouse.class);
-
-                        assert rentersOfHouse != null;
-                        String maleName = rentersOfHouse.getRenterNameMale();
-                        String femaleName = rentersOfHouse.getRenterNameFemale();
-                        String maleMobile = rentersOfHouse.getRenterMaleMobile();
-                        String femaleMobile = rentersOfHouse.getRenterFemaleMobile();
-                        String altMobile = rentersOfHouse.getAlternateMobile();
-                        displayName = rentersOfHouse.getDisplayName();
-                        userCategory = USER_RENTER;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    // Set the details of the owner/renter =========================================================
-    private void setAccountDetails(String userCategory) {
-        textViewDisplayName.setText(displayName);
-        textViewORMobile.setText(displayMobile);
-        textViewUserCategory.setText(String.format("House %s", userCategory));
-
-        switch (userCategory) {
-            case USER_OWNER:
-                buttonOwnersRenters.setText("My Renters");
-                break;
-
-            case USER_RENTER:
-                buttonOwnersRenters.setText("My Owners");
-                break;
-        }
-    }
-
-    private void showToast(String stringMessage) {
-        Toast.makeText(this, stringMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    private void setButtonClickListeners() {
-        buttonOwnersRenters.setOnClickListener(this);
-        buttonAboutApp.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(@NotNull View view) {
-        switch (view.getId()) {
-            case R.id.button_main_owners_renters:
-                if (userFound) {
-                    Intent intent = new Intent(PayKeeperMainActivity.this,
-                            OwnersRentersListActivity.class);
-                    intent.putExtra(KEY_USER, userCategory);
-                    intent.putExtra(KEY_UID, ownerRenterUID);
-                    startActivity(intent);
+                    progressBar.setVisibility(View.GONE);
+                    readComplete = true;
                 } else {
-                    Toast.makeText(this, "Please wait while reading...", Toast.LENGTH_LONG).show();
-                }
-                break;
+                    referenceUserRenterBasic.child(mUid).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
+                                for (DataSnapshot snapshotItem : dataSnapshot.getChildren()) {
+                                    if (Objects.equals(snapshotItem.getKey(), "userName")) {
+                                        String userName = snapshotItem.getValue(String.class);
 
-            case R.id.button_main_about_app:
-                try {
-                    PackageInfo pInfo = getApplicationContext().getPackageManager()
-                            .getPackageInfo(getPackageName(), 0);
-                    String versionName = String.format("Version%s", pInfo.versionName.substring(3));
+                                        mCategory = USER_RENTER;
 
-                    showToast(versionName);
-                } catch (PackageManager.NameNotFoundException exception) {
-                    exception.printStackTrace();
+                                        textViewName.setText(userName);
+                                        textViewPhoneNum.setText(mPhoneNumber);
+                                        textViewCategory.setText(getString(R.string.tv_text_house_renter));
+
+                                        buttonOwnersRenters.setText(getString(R.string.btn_text_my_owners));
+                                    }
+                                }
+
+                                progressBar.setVisibility(View.GONE);
+                                readComplete = true;
+                            } else {
+                                Toast.makeText(PayKeeperMainActivity.this, getString(R.string.tst_text_register_plz), Toast.LENGTH_LONG).show();
+
+                                Intent intent = new Intent(PayKeeperMainActivity.this, UserRegistrationActivity.class);
+                                intent.putExtra(KEY_UID, mUid);
+                                intent.putExtra(KEY_PHONE_NUM, mPhoneNumber);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(PayKeeperMainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            readComplete = true;
+                        }
+                    });
                 }
-                break;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(PayKeeperMainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                readComplete = true;
+            }
+        });
+    }
+
+    // Button click handling function will go here ================================================>
+    @Override
+    public void onClick(View view) {
+        if (readComplete) {
+            switch (view.getId()) {
+                case R.id.button_main_owners_renters:
+                    Intent intent = new Intent(PayKeeperMainActivity.this, OwnersRentersListActivity.class);
+                    intent.putExtra(KEY_CATEGORY, mCategory);
+                    intent.putExtra(KEY_UID, mUid);
+                    startActivity(intent);
+                    break;
+
+                case R.id.button_main_about_app:
+                    try {
+                        PackageInfo pInfo = getApplicationContext().getPackageManager()
+                                .getPackageInfo(getPackageName(), 0);
+                        String versionName = String.format("Version%s", pInfo.versionName.substring(3));
+
+                        Toast.makeText(this, versionName, Toast.LENGTH_SHORT).show();
+                    } catch (PackageManager.NameNotFoundException exception) {
+                        exception.printStackTrace();
+                    }
+                    break;
+
+                case R.id.button_main_sign_out:
+                    mAuth.signOut();
+                    startActivity(new Intent(PayKeeperMainActivity.this, PayKeeperLoginActivity.class));
+                    finish();
+                    break;
+            }
+        } else {
+            Toast.makeText(this, "Please wait while reading...", Toast.LENGTH_LONG).show();
         }
     }
 }

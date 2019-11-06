@@ -4,56 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#07A7A7"
     tools:context=".activities.AddOwnerRenterActivity">
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#EEEEEE"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/layout_add_or_mob_no"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
-
-        <EditText
-            android:id="@+id/edit_text_add_or_mob_no"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/background_edit_text_mob_no"
-            android:ems="10"
-            android:hint="@string/ten_digit_mob_no"
-            android:inputType="phone"
-            android:maxLength="10"
-            android:paddingStart="16dp"
-            android:paddingTop="12dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="12dp"
-            tools:ignore="Autofill" />
-
-        <Button
-            android:id="@+id/button_add_or_check_mob"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:background="@drawable/background_edit_text_mob_no"
-            android:text="@string/text_continue" />
-    </LinearLayout>
 
     <EditText
         android:id="@+id/edit_text_add_or_name"
@@ -62,7 +14,6 @@
         android:layout_margin="24dp"
         android:layout_marginTop="6dp"
         android:background="@drawable/background_edit_text_mob_no"
-        android:ems="10"
         android:hint="Full name"
         android:inputType="textPersonName|textCapWords"
         android:paddingStart="16dp"
@@ -71,32 +22,28 @@
         android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_add_or_mob_no"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="Autofill" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
+    <EditText
+        android:id="@+id/edit_text_add_or_mob_num"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_add_or_name"
-        tools:layout_editor_absoluteX="24dp">
-
-        <RadioButton
-            android:id="@+id/radio_button_add_or_male"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Male" />
-
-        <RadioButton
-            android:id="@+id/radio_button_add_or_female"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Female" />
-    </RadioGroup>
+        android:background="@drawable/background_edit_text_mob_no"
+        android:hint="@string/ten_digit_mob_no"
+        android:inputType="phone"
+        android:maxLength="10"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_add_or_name"
+        tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/edit_text_add_or_rent"
@@ -114,13 +61,14 @@
         android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_add_or_mob_num"
         tools:ignore="Autofill" />
 
     <LinearLayout
         android:id="@+id/layout_add_or_save_discard"
         android:layout_width="0dp"
         android:layout_height="?actionBarSize"
+        android:background="#1976D2"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -132,7 +80,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/background_button_middle_6dp"
-            android:text="Save OR" />
+            android:text="Save" />
 
         <View
             android:layout_width="1dp"

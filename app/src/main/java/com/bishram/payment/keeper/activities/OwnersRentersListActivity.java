@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bishram.payment.keeper.R;
@@ -23,10 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import static com.bishram.payment.keeper.Constants.FIREBASE_OWNERS_RENTED_PATH;
+import static com.bishram.payment.keeper.Constants.FIREBASE_RENTERS_OWNED_PATH;
+import static com.bishram.payment.keeper.Constants.KEY_CATEGORY;
 import static com.bishram.payment.keeper.Constants.KEY_UID;
-import static com.bishram.payment.keeper.Constants.KEY_USER;
 import static com.bishram.payment.keeper.Constants.USER_OWNER;
 import static com.bishram.payment.keeper.Constants.USER_RENTER;
+
 
 public class OwnersRentersListActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,17 +41,25 @@ public class OwnersRentersListActivity extends AppCompatActivity implements View
     private LinearLayout layoutEmpty;
     private LinearLayout layoutList;
 
+    private TextView textViewEmptyList;
+
     private ArrayAdapter<String> arrayAdapterORL;
 
-    private String stringUser;
-    private String ownerRenterUID;
+    DatabaseReference referenceRoot;
+
+    private String mCategory;
+    private String mUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owners_renters_list);
 
+        getIntents();
+
         initializeViews();
+
+        initializeFirebaseOb();
 
         setButtonClickListeners();
 
@@ -59,12 +70,19 @@ public class OwnersRentersListActivity extends AppCompatActivity implements View
     protected void onResume() {
         super.onResume();
 
-        switch (stringUser) {
+        switch (mCategory) {
             case USER_OWNER:
-                readOwnersRentedPath();
+                setTitle("All Renters");
+                readOwnedRentedPath(referenceRoot.child(FIREBASE_OWNERS_RENTED_PATH).child(mUid),
+                        getString(R.string.tv_text_list_empty_renter),
+                        getString(R.string.btn_text_add_new_renter));
                 break;
 
             case USER_RENTER:
+                setTitle("All Owners");
+                readOwnedRentedPath(referenceRoot.child(FIREBASE_RENTERS_OWNED_PATH).child(mUid),
+                        getString(R.string.tv_text_list_empty_owner),
+                        getString(R.string.btn_text_add_new_owner));
                 break;
         }
     }
@@ -72,31 +90,40 @@ public class OwnersRentersListActivity extends AppCompatActivity implements View
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.button_or_list_add_new_or_middle:
+            case R.id.button_or_list_add_new_middle:
 
             case R.id.button_or_list_add_new_or_bottom:
                 Intent intent = new Intent(OwnersRentersListActivity.this, AddOwnerRenterActivity.class);
-                intent.putExtra(KEY_USER, stringUser);
+                intent.putExtra(KEY_CATEGORY, mCategory);
+                intent.putExtra(KEY_UID, mUid);
                 startActivity(intent);
                 break;
         }
     }
 
+    private void getIntents() {
+        mCategory = getIntent().getStringExtra(KEY_CATEGORY);
+        mUid = getIntent().getStringExtra(KEY_UID);
+    }
+
     private void initializeViews() {
         buttonAddORBottom = findViewById(R.id.button_or_list_add_new_or_bottom);
-        buttonAddORMiddle = findViewById(R.id.button_or_list_add_new_or_middle);
+        buttonAddORMiddle = findViewById(R.id.button_or_list_add_new_middle);
 
         listViewORL = findViewById(R.id.list_view_or_list);
 
         layoutEmpty = findViewById(R.id.linear_or_list_empty_data);
         layoutList = findViewById(R.id.layout_or_list_owners_renters);
 
+        textViewEmptyList = findViewById(R.id.text_view_or_list_empty);
+
         ArrayList<String> arrayListORL = new ArrayList<>();
 
         arrayAdapterORL = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, arrayListORL);
+    }
 
-        stringUser = getIntent().getStringExtra(KEY_USER);
-        ownerRenterUID = getIntent().getStringExtra(KEY_UID);
+    private void initializeFirebaseOb() {
+        referenceRoot = FirebaseDatabase.getInstance().getReference();
     }
 
     private void setButtonClickListeners() {
@@ -104,43 +131,44 @@ public class OwnersRentersListActivity extends AppCompatActivity implements View
         buttonAddORBottom.setOnClickListener(this);
     }
 
-    // Read 'Owners rented' firebase path
-    private void readOwnersRentedPath() {
-        DatabaseReference referenceToOwnersRentedPath = FirebaseDatabase.getInstance().getReference().child(FIREBASE_OWNERS_RENTED_PATH).child(ownerRenterUID);
-
-        referenceToOwnersRentedPath.addValueEventListener(new ValueEventListener() {
+    // Read 'Owner's rented' as well as 'Renter's owned' firebase path
+    private void readOwnedRentedPath(DatabaseReference currentDbReference,
+                                     final String emptyTextMiddle,
+                                     final String btnTextOR) {
+        currentDbReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
                     arrayAdapterORL.clear();
 
-                    for (DataSnapshot orSnapshot : dataSnapshot.getChildren()) {
-                        OwnerRenterList ownerRenterList = orSnapshot.getValue(OwnerRenterList.class);
+                    for (DataSnapshot renterSnapshot : dataSnapshot.getChildren()) {
+                        OwnerRenterList currentOR = renterSnapshot.getValue(OwnerRenterList.class);
 
-                        assert ownerRenterList != null;
-                        if (ownerRenterList.getStringNickName() != null) {
-                            arrayAdapterORL.add(String.format("%s\n%s", ownerRenterList.getStringNickName(), ownerRenterList.getStringStatus()));
-                        } else {
-                            arrayAdapterORL.add(String.format("%s\n%s", "Unknown Name", ownerRenterList.getStringStatus()));
-                        }
-
-                        arrayAdapterORL.notifyDataSetChanged();
+                        assert currentOR != null;
+                        arrayAdapterORL.add(String.format("%s\n%s", currentOR.getFullName(), currentOR.getCurrentStatus()));
                     }
 
+                    arrayAdapterORL.notifyDataSetChanged();
+
+                    buttonAddORBottom.setText(btnTextOR);
                     layoutEmpty.setVisibility(View.GONE);
                     layoutList.setVisibility(View.VISIBLE);
+                } else {
+                    textViewEmptyList.setText(emptyTextMiddle);
+                    buttonAddORMiddle.setText(btnTextOR);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(OwnersRentersListActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                textViewEmptyList.setText(getString(R.string.tv_text_server_access_denied));
+                buttonAddORMiddle.setVisibility(View.INVISIBLE);
             }
         });
     }
 
     private void setORList() {
         listViewORL.setAdapter(arrayAdapterORL);
-        layoutList.setVisibility(View.VISIBLE);
     }
 }

@@ -23,11 +23,16 @@
     <!-- Ten digit mobile number example -->
     <string name="ten_digit_mob_no">9876543210</string>
 
-    <!-- activity_pay_keeper_main -->
-    <string name="text_account_details">Account details</string>
-    <string name="text_about_app">About app</string>
+    <!-- ACTIVITY_PAY_KEEPER_MAIN ===============================================================-->
+    <string name="btn_text_my_owners">My Owners</string>
+    <string name="btn_text_my_renters">My Renters</string>
+    <string name="tst_text_register_plz">Please register to use this app!</string>
+    <string name="tv_text_about_app">About App</string>
+    <string name="tv_text_account_details">Account details</string>
+    <string name="tv_text_house_owner">House Owner</string>
+    <string name="tv_text_house_renter">House Renter</string>
 
-    <!-- activity_pay_keeper_login -->
+    <!-- ACTIVITY_PAY_KEEPER_LOGIN ==============================================================-->
     <string name="btn_txt_edit">Edit</string>
     <string name="btn_txt_verify_and_continue"><![CDATA[Verify & Continue]]></string>
     <string name="btn_txt_send_verification_code">Send verification code</string>
@@ -36,8 +41,19 @@
     <string name="btn_txt_clear">Clear</string>
     <string name="or_list_action_bar_title">My Owners/Renters List</string>
 
+    <!-- ACTIVITY_OWNERS_RENTERS_LIST ========================================================== -->
+    <!-- Text resource for empty list of owners -->
+    <string name="tv_text_list_empty_owner">No owners were found.\nTap below to</string>
 
-    <!-- activity_add_owner_renter ============================================================= -->
-    <string name="text_continue">Continue</string>
+    <!-- Text resource for empty list of renters -->
+    <string name="tv_text_list_empty_renter">No renters were found.\nTap below to</string>
+    <string name="btn_text_add_new_owner">Add new owner</string>
+    <string name="btn_text_add_new_renter">Add new renter</string>
+
+    <!-- Text resource for firebase database 'Permission Denied' ================================-->
+    <string name="tv_text_server_access_denied">"Server access denied.\nPlease contact app administrator."</string>
+
+    <!-- ACTIVITY_ADD_OWNER_RENTER ============================================================= -->
+    <string name="btn_text_continue">Continue</string>
 
 </resources>
