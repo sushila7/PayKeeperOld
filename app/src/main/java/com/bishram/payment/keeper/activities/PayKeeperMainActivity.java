@@ -36,6 +36,7 @@ import static com.bishram.payment.keeper.Constants.USER_RENTER;
 public class PayKeeperMainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button buttonOwnersRenters;
+    private Button buttonMyPayments;
     private Button buttonAboutApp;
     private Button buttonSignOut;
 
@@ -98,6 +99,7 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
 
     private void initializeViewOb() {
         buttonOwnersRenters = findViewById(R.id.button_main_owners_renters);
+        buttonMyPayments = findViewById(R.id.button_main_my_payments);
         buttonAboutApp = findViewById(R.id.button_main_about_app);
         buttonSignOut = findViewById(R.id.button_main_sign_out);
 
@@ -109,6 +111,7 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
     }
 
     private void setClickListeners() {
+        buttonMyPayments.setOnClickListener(this);
         buttonOwnersRenters.setOnClickListener(this);
         buttonAboutApp.setOnClickListener(this);
         buttonSignOut.setOnClickListener(this);
@@ -134,7 +137,10 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                             textViewPhoneNum.setText(mPhoneNumber);
                             textViewCategory.setText(getString(R.string.tv_text_house_owner));
 
+                            buttonMyPayments.setText(getString(R.string.btn_text_renter_payments));
                             buttonOwnersRenters.setText(getString(R.string.btn_text_my_renters));
+                            buttonAboutApp.setText(getString(R.string.tv_text_about_app));
+                            buttonSignOut.setText(getString(R.string.btn_text_sign_out));
                         }
                     }
 
@@ -155,7 +161,10 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                                         textViewPhoneNum.setText(mPhoneNumber);
                                         textViewCategory.setText(getString(R.string.tv_text_house_renter));
 
+                                        buttonMyPayments.setText(getString(R.string.btn_text_my_payments));
                                         buttonOwnersRenters.setText(getString(R.string.btn_text_my_owners));
+                                        buttonAboutApp.setText(getString(R.string.tv_text_about_app));
+                                        buttonSignOut.setText(getString(R.string.btn_text_sign_out));
                                     }
                                 }
 
@@ -201,6 +210,10 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                     intent.putExtra(KEY_CATEGORY, mCategory);
                     intent.putExtra(KEY_UID, mUid);
                     startActivity(intent);
+                    break;
+
+                case R.id.button_main_my_payments:
+                    Toast.makeText(this, "This feature is coming soon.", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.button_main_about_app:

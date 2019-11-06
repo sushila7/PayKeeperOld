@@ -24,8 +24,11 @@
     <string name="ten_digit_mob_no">9876543210</string>
 
     <!-- ACTIVITY_PAY_KEEPER_MAIN ===============================================================-->
+    <string name="btn_text_my_payments">My Payments</string>
     <string name="btn_text_my_owners">My Owners</string>
     <string name="btn_text_my_renters">My Renters</string>
+    <string name="btn_text_renter_payments">Renter Payments</string>
+    <string name="btn_text_sign_out">Sign Out</string>
     <string name="tst_text_register_plz">Please register to use this app!</string>
     <string name="tv_text_about_app">About App</string>
     <string name="tv_text_account_details">Account details</string>

@@ -75,10 +75,30 @@
                     android:layout_marginTop="1px"
                     android:layout_marginEnd="1px"
                     android:background="@drawable/background_button_top_6dp"
+                    android:drawableEnd="@drawable/ic_action_arrow_right_holo_light"
                     android:gravity="start|center_vertical"
                     android:padding="24dp"
                     android:textAllCaps="false"
                     tools:text="Owned or Rented" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#A7A7A7" />
+
+                <Button
+                    android:id="@+id/button_main_my_payments"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="1px"
+                    android:layout_marginTop="1px"
+                    android:layout_marginEnd="1px"
+                    android:background="@drawable/background_button_middle_6dp"
+                    android:drawableEnd="@drawable/ic_action_arrow_right_holo_light"
+                    android:gravity="start|center_vertical"
+                    android:padding="24dp"
+                    android:textAllCaps="false"
+                    tools:text="@string/btn_text_my_payments" />
 
                 <View
                     android:layout_width="match_parent"
@@ -92,10 +112,11 @@
                     android:layout_marginStart="1px"
                     android:layout_marginEnd="1px"
                     android:background="@drawable/background_button_middle_6dp"
+                    android:drawableEnd="@drawable/ic_action_arrow_right_holo_light"
                     android:gravity="start|center_vertical"
                     android:padding="24dp"
-                    android:text="@string/tv_text_about_app"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    tools:text="@string/tv_text_about_app" />
 
                 <View
                     android:layout_width="match_parent"
@@ -110,10 +131,11 @@
                     android:layout_marginEnd="1px"
                     android:layout_marginBottom="1px"
                     android:background="@drawable/background_button_bottom_6dp"
+                    android:drawableEnd="@drawable/ic_action_arrow_right_holo_light"
                     android:gravity="start|center_vertical"
                     android:padding="24dp"
-                    android:text="Sign Out"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    tools:text="@string/btn_text_sign_out" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
