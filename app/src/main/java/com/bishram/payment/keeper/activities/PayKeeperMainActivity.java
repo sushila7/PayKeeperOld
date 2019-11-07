@@ -213,7 +213,10 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                     break;
 
                 case R.id.button_main_my_payments:
-                    Toast.makeText(this, "This feature is coming soon.", Toast.LENGTH_SHORT).show();
+                    Intent intent1 = new Intent(PayKeeperMainActivity.this, TransactionListActivity.class);
+                    intent1.putExtra(KEY_CATEGORY, mCategory);
+                    intent1.putExtra(KEY_UID, mUid);
+                    startActivity(intent1);
                     break;
 
                 case R.id.button_main_about_app:
