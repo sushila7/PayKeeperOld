@@ -12,16 +12,27 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_margin="12dp"
-        android:background="@drawable/background_edit_text_mob_no"
         android:gravity="center"
         android:padding="8dp"
         android:textColor="@android:color/white"
         tools:text="01" />
 
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/white" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
