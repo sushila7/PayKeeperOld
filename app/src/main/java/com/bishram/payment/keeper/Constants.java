@@ -22,13 +22,11 @@ public class Constants {
     // FIREBASE REALTIME DATABASE PATHS
     // Path for the owner
     public static final String FIREBASE_USER_OWNER_PATH = "users/owners";
-    public static final String FIREBASE_USERS_OWNERS_BASIC_PATH = "users/owners/basic";
-    public static final String FIREBASE_USERS_OWNERS_ADVANCE_PATH = "users/owners/advance";
+    public static final String FIREBASE_USERS_OWNERS_BASIC_PATH = "users/basic/owners";
 
     // Path for the renter
     public static final String FIREBASE_USER_RENTER_PATH = "users/renters";
-    public static final String FIREBASE_USERS_RENTERS_BASIC_PATH = "users/renters/basic";
-    public static final String FIREBASE_USERS_RENTERS_ADVANCE_PATH = "users/renters/advance";
+    public static final String FIREBASE_USERS_RENTERS_BASIC_PATH = "users/basic/renters";
 
     // Path for the list of renters rented an owner
     public static final String FIREBASE_OWNERS_RENTED_PATH = "owned_rented/owners";
