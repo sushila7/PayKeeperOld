@@ -35,4 +35,6 @@ public class Constants {
 
     // Path for the list of owners owned by a renter
     public static final String FIREBASE_RENTERS_OWNED_PATH = "owned_rented/renters";
+
+    public static final String FIREBASE_RENT_PAID_RECEIVED = "paid_received";
 }

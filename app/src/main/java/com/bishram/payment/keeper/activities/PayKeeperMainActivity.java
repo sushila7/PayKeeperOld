@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bishram.payment.keeper.R;
+import com.bishram.payment.keeper.models.UserBasicDetails;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
+import static com.bishram.payment.keeper.Constants.FIREBASE_RENT_PAID_RECEIVED;
 import static com.bishram.payment.keeper.Constants.FIREBASE_USERS_OWNERS_BASIC_PATH;
 import static com.bishram.payment.keeper.Constants.FIREBASE_USERS_RENTERS_BASIC_PATH;
 import static com.bishram.payment.keeper.Constants.KEY_CATEGORY;
@@ -228,6 +230,47 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                         Toast.makeText(this, versionName, Toast.LENGTH_SHORT).show();
                     } catch (PackageManager.NameNotFoundException exception) {
                         exception.printStackTrace();
+                    }
+
+                    if (mCategory.equals(USER_OWNER)) {
+                        FirebaseDatabase.getInstance().getReference().child(FIREBASE_RENT_PAID_RECEIVED).child(mUid).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
+                                    for (DataSnapshot rentersPayRecSnapshot : dataSnapshot.getChildren()) {
+                                        String payment = rentersPayRecSnapshot.child("rentPaidReceived").getValue(String.class);
+
+                                        assert payment != null;
+                                        Toast.makeText(PayKeeperMainActivity.this, payment, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(PayKeeperMainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else if (mCategory.equals(USER_RENTER)) {
+                        FirebaseDatabase.getInstance().getReference().child(FIREBASE_RENT_PAID_RECEIVED).child("u21yavPUHDT1d1LzR40odQlrjV03").child(mUid).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists() && dataSnapshot.hasChildren()) {
+                                    for (DataSnapshot payItem : dataSnapshot.getChildren()) {
+                                        String payment = payItem.getValue(String.class);
+
+                                        Toast.makeText(PayKeeperMainActivity.this, payment, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(PayKeeperMainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(this, "No user selected!", Toast.LENGTH_SHORT).show();
                     }
                     break;
 
