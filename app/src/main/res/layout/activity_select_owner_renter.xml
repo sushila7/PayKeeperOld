@@ -7,9 +7,8 @@
     android:clipToPadding="false"
     android:divider="@android:color/transparent"
     android:dividerHeight="12dp"
-    android:drawSelectorOnTop="true"
     android:orientation="vertical"
     android:padding="24dp"
     android:scrollbars="none"
-    tools:context=".activities.TransactionListActivity"
+    tools:context=".activities.SelectOwnerRenterActivity"
     tools:listitem="@layout/list_item_owners_renters" />

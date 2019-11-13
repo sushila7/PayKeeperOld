@@ -10,7 +10,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.TransactionListActivity"></activity>
         <activity
             android:name=".activities.PayKeeperMainActivity"
             android:label="@string/main_action_bar_title"
@@ -35,6 +34,11 @@
         <activity
             android:name=".activities.AddOwnerRenterActivity"
             android:label="@string/add_new_owner_action_bar_title" />
+        <activity android:name=".activities.SelectOwnerRenterActivity" />
+        <activity android:name=".activities.RentTransactionListActivity" />
+        <activity
+            android:name=".activities.AddPaymentPRActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

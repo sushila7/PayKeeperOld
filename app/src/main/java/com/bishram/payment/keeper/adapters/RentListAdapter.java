@@ -39,8 +39,9 @@ public class RentListAdapter extends ArrayAdapter<OwnerRenterList> {
         if (position<9) {
             textViewSerialNo.setText(String.format(Locale.getDefault(),"0%d", position+1));
         } else {
-            textViewSerialNo.setText(String.valueOf(position));
+            textViewSerialNo.setText(String.valueOf(position+1));
         }
+
         textViewName.setText(currentOR.getFullName());
         textViewPhone.setText(currentOR.getPhoneNumber());
         textViewStatus.setText(currentOR.getCurrentStatus());

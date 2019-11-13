@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.RentTransactionListActivity">
+
+    <ListView
+        android:id="@+id/list_view_or_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="16dp"
+        android:padding="16dp"
+        android:scrollbars="none"
+        tools:listitem="@layout/list_item_payment" />
+
+    <Button
+        android:id="@+id/button_trans_add_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@drawable/background_edit_text_mob_no"
+        android:text="@string/add_new_old_payment" />
+</LinearLayout>

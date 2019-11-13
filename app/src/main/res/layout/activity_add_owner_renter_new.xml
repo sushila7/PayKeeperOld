@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_add_or_check_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:background="@drawable/background_layout_registration"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+91"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/edit_text_add_or_mob_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/ten_digit_mob_no" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_add_or_check_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Check user" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_add_or_register_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:visibility="gone"
+        android:background="@drawable/background_layout_registration"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/text_view_add_or_user_found"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No user found" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_text_add_or_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Full name"
+                android:maxLines="1" />
+
+            <EditText
+                android:id="@+id/edit_text_add_or_rent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Rent paying"
+                android:inputType="number"
+                android:maxLength="5"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_add_or_discard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discard" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/button_add_or_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Register" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

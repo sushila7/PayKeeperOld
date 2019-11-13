@@ -3,7 +3,10 @@ package com.bishram.payment.keeper.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,14 +23,19 @@ import java.util.ArrayList;
 
 import static com.bishram.payment.keeper.Constants.FIREBASE_OWNERS_RENTED_PATH;
 import static com.bishram.payment.keeper.Constants.FIREBASE_RENTERS_OWNED_PATH;
+import static com.bishram.payment.keeper.Constants.FIREBASE_RENT_PAID_RECEIVED;
 import static com.bishram.payment.keeper.Constants.KEY_CATEGORY;
+import static com.bishram.payment.keeper.Constants.KEY_OWNER_RENTER_NAME;
+import static com.bishram.payment.keeper.Constants.KEY_OWNER_RENTER_UID;
 import static com.bishram.payment.keeper.Constants.KEY_UID;
 import static com.bishram.payment.keeper.Constants.USER_OWNER;
 import static com.bishram.payment.keeper.Constants.USER_RENTER;
 
-public class TransactionListActivity extends AppCompatActivity {
+public class SelectOwnerRenterActivity extends AppCompatActivity {
 
     private ListView listViewRentTrans;
+
+    private ArrayList<OwnerRenterList> ownerRenterList;
 
     private RentListAdapter rentListAdapter;
 
@@ -39,7 +47,7 @@ public class TransactionListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_list);
+        setContentView(R.layout.activity_select_owner_renter);
 
         getIntents();
 
@@ -56,12 +64,12 @@ public class TransactionListActivity extends AppCompatActivity {
 
         switch (mCategory) {
             case USER_OWNER:
-                setTitle(getString(R.string.btn_text_my_payments));
+                setTitle("Select renter");
                 readOwnedRentedPath(referenceRoot.child(FIREBASE_OWNERS_RENTED_PATH).child(mUid));
                 break;
 
             case USER_RENTER:
-                setTitle(getString(R.string.btn_text_renter_payments));
+                setTitle("Select owner");
                 readOwnedRentedPath(referenceRoot.child(FIREBASE_RENTERS_OWNED_PATH).child(mUid));
                 break;
         }
@@ -75,7 +83,7 @@ public class TransactionListActivity extends AppCompatActivity {
     private void initializeViews() {
         listViewRentTrans = findViewById(R.id.list_view_trans_rent);
 
-        ArrayList<OwnerRenterList> ownerRenterList = new ArrayList<>();
+        ownerRenterList = new ArrayList<>();
 
         rentListAdapter = new RentListAdapter(getApplicationContext(), ownerRenterList);
     }
@@ -86,6 +94,7 @@ public class TransactionListActivity extends AppCompatActivity {
 
     private void setTransList() {
         listViewRentTrans.setAdapter(rentListAdapter);
+        addListViewItemListener();
     }
 
     // Read 'Owner's rented' as well as 'Renter's owned' firebase path
@@ -109,7 +118,22 @@ public class TransactionListActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(TransactionListActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(SelectOwnerRenterActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void addListViewItemListener() {
+        listViewRentTrans.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(SelectOwnerRenterActivity.this, RentTransactionListActivity.class);
+                intent.putExtra(KEY_CATEGORY, mCategory);
+                intent.putExtra(KEY_UID, mUid);
+                intent.putExtra(KEY_OWNER_RENTER_NAME, ownerRenterList.get(position).getFullName());
+                intent.putExtra(KEY_OWNER_RENTER_UID, ownerRenterList.get(position).getPushUid());
+                startActivity(intent);
             }
         });
     }

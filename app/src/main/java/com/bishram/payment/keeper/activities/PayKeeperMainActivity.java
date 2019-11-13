@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bishram.payment.keeper.R;
-import com.bishram.payment.keeper.models.UserBasicDetails;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,10 +39,10 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
     private Button buttonOwnersRenters;
     private Button buttonMyPayments;
     private Button buttonAboutApp;
-    private Button buttonSignOut;
 
     private ProgressBar progressBar;
 
+    private TextView textViewHeader;
     private TextView textViewName;
     private TextView textViewPhoneNum;
     private TextView textViewCategory;
@@ -100,13 +99,13 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initializeViewOb() {
-        buttonOwnersRenters = findViewById(R.id.button_main_owners_renters);
+        buttonOwnersRenters = findViewById(R.id.button_main_or_list);
         buttonMyPayments = findViewById(R.id.button_main_my_payments);
         buttonAboutApp = findViewById(R.id.button_main_about_app);
-        buttonSignOut = findViewById(R.id.button_main_sign_out);
 
         progressBar = findViewById(R.id.pb_main_fetching_user_data);
 
+        textViewHeader = findViewById(R.id.text_view_main_header);
         textViewName = findViewById(R.id.text_view_main_display_main);
         textViewPhoneNum = findViewById(R.id.text_view_main_or_mobile);
         textViewCategory = findViewById(R.id.text_view_main_user_category);
@@ -116,7 +115,6 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
         buttonMyPayments.setOnClickListener(this);
         buttonOwnersRenters.setOnClickListener(this);
         buttonAboutApp.setOnClickListener(this);
-        buttonSignOut.setOnClickListener(this);
     }
 
     private boolean checkUserHasLogged() {
@@ -136,13 +134,14 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                             mCategory = USER_OWNER;
 
                             textViewName.setText(userName);
-                            textViewPhoneNum.setText(mPhoneNumber);
+                            textViewHeader.setText(mPhoneNumber);
                             textViewCategory.setText(getString(R.string.tv_text_house_owner));
+                            textViewName.setVisibility(View.VISIBLE);
+                            textViewCategory.setVisibility(View.VISIBLE);
 
                             buttonMyPayments.setText(getString(R.string.btn_text_renter_payments));
                             buttonOwnersRenters.setText(getString(R.string.btn_text_my_renters));
                             buttonAboutApp.setText(getString(R.string.tv_text_about_app));
-                            buttonSignOut.setText(getString(R.string.btn_text_sign_out));
                         }
                     }
 
@@ -160,13 +159,14 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                                         mCategory = USER_RENTER;
 
                                         textViewName.setText(userName);
-                                        textViewPhoneNum.setText(mPhoneNumber);
+                                        textViewHeader.setText(mPhoneNumber);
                                         textViewCategory.setText(getString(R.string.tv_text_house_renter));
+                                        textViewName.setVisibility(View.VISIBLE);
+                                        textViewCategory.setVisibility(View.VISIBLE);
 
                                         buttonMyPayments.setText(getString(R.string.btn_text_my_payments));
                                         buttonOwnersRenters.setText(getString(R.string.btn_text_my_owners));
                                         buttonAboutApp.setText(getString(R.string.tv_text_about_app));
-                                        buttonSignOut.setText(getString(R.string.btn_text_sign_out));
                                     }
                                 }
 
@@ -207,7 +207,7 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         if (readComplete) {
             switch (view.getId()) {
-                case R.id.button_main_owners_renters:
+                case R.id.button_main_or_list:
                     Intent intent = new Intent(PayKeeperMainActivity.this, OwnersRentersListActivity.class);
                     intent.putExtra(KEY_CATEGORY, mCategory);
                     intent.putExtra(KEY_UID, mUid);
@@ -215,7 +215,7 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                     break;
 
                 case R.id.button_main_my_payments:
-                    Intent intent1 = new Intent(PayKeeperMainActivity.this, TransactionListActivity.class);
+                    Intent intent1 = new Intent(PayKeeperMainActivity.this, SelectOwnerRenterActivity.class);
                     intent1.putExtra(KEY_CATEGORY, mCategory);
                     intent1.putExtra(KEY_UID, mUid);
                     startActivity(intent1);
@@ -272,12 +272,6 @@ public class PayKeeperMainActivity extends AppCompatActivity implements View.OnC
                     } else {
                         Toast.makeText(this, "No user selected!", Toast.LENGTH_SHORT).show();
                     }
-                    break;
-
-                case R.id.button_main_sign_out:
-                    mAuth.signOut();
-                    startActivity(new Intent(PayKeeperMainActivity.this, PayKeeperLoginActivity.class));
-                    finish();
                     break;
             }
         } else {

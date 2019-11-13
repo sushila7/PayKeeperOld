@@ -13,6 +13,8 @@ public class Constants {
     public static final String KEY_USER = "user_type";
     public static final String KEY_OWNER = "key_owner";
     public static final String KEY_RENTER = "key_renter";
+    public static final String KEY_OWNER_RENTER_NAME = "key_or_name";
+    public static final String KEY_OWNER_RENTER_UID = "key_or_uid";
     public static final String USER_OWNER = "Owner";
     public static final String USER_RENTER = "Renter";
 
@@ -35,4 +37,7 @@ public class Constants {
     public static final String FIREBASE_RENTERS_OWNED_PATH = "owned_rented/renters";
 
     public static final String FIREBASE_RENT_PAID_RECEIVED = "paid_received";
+
+    public static final String FIREBASE_OWNER_RENTER_ALL_PAYMENT = "all_payments";
+    public static final String FIREBASE_OWNER_RENTER_PARTNERED_PAYMENT = "partnered_payments";
 }

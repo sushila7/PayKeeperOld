@@ -31,7 +31,7 @@
     <string name="btn_text_sign_out">Sign Out</string>
     <string name="tst_text_register_plz">Please register to use this app!</string>
     <string name="tv_text_about_app">About App</string>
-    <string name="tv_text_account_details">Account details</string>
+    <string name="tv_text_account_details">Fetching account details</string>
     <string name="tv_text_house_owner">House Owner</string>
     <string name="tv_text_house_renter">House Renter</string>
 
@@ -58,5 +58,6 @@
 
     <!-- ACTIVITY_ADD_OWNER_RENTER ============================================================= -->
     <string name="btn_text_continue">Continue</string>
+    <string name="add_new_old_payment">Add new/old payment</string>
 
 </resources>
