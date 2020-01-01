@@ -7,6 +7,7 @@ public class UserBasicDetails {
 
     public UserBasicDetails() {
         // Empty constructor used while reading data
+        // This is a mandatory constructor. 
     }
 
     public UserBasicDetails(String userName, String userMobile, String uidAuth) {
